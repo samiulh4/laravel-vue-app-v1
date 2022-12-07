@@ -1,0 +1,18 @@
+https://l5modular.github.io/introduction/
+https://www.itsolutionstuff.com/post/laravel-5-create-modular-structure-application-example-using-l5modular-packageexample.html
+
+composer require artem-schander/l5-modular "^1.4.3"
+
+'providers' => [
+	ArtemSchander\L5Modular\ModuleServiceProvider::class,
+]
+
+
+php artisan make:module module_name [--no-migration] [--no-translation]
+php artisan make:module Users --no-migration
+php artisan make:module Dashboards --no-migration
+
+
+php artisan make:module:controller
+php artisan make:module:controller MemberController --module=HelloWorld --model=Member
+php artisan make:module:controller AdminUserController --module=HelloWorld
