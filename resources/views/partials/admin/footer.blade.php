@@ -1,6 +1,4 @@
-<footer>
-  <p>Blog template built for <a href="https://getbootstrap.com/">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
-  <p>
-    <a href="#">Back to top</a>
-  </p>
-</footer>
+<h6 class="text-center">
+    Laravel & Vue App V1 <a href="javascript:void(0)">Md.Samiul Haque</a>
+</h6>
+<p class="text-center"><a href="#page-top">Back to top</a></p>

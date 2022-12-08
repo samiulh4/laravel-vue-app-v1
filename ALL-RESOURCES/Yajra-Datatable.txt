@@ -1,0 +1,5 @@
+composer require yajra/laravel-datatables-oracle
+php artisan vendor:publish --tag=datatables
+
+
+ Yajra\Datatables\DatatablesServiceProvider::class,
