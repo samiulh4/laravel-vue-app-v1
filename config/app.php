@@ -167,6 +167,7 @@ return [
          */
         ArtemSchander\L5Modular\ModuleServiceProvider::class,
         Yajra\Datatables\DatatablesServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -230,6 +231,7 @@ return [
          * Package Aliases...
          */
         'Datatables' => 'Yajra\Datatables\Facades\Datatables',
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
 
     ],
 

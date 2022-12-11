@@ -9,20 +9,26 @@
     </nav>
 @endsection
 @section('content')
-    <input type="text" name="email" class="form-control searchEmail" placeholder="Search for Email Only...">
-    <table class="table table-striped table-bordered" id="usersTable">
-        <thead>
-        <tr>
-            <th>SN</th>
-            <th>Type</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+
+
+    <a class="btn btn-sm btn-outline-dark mb-2" style="float: right!important;" href="{{ url('admin/user/create') }}">Add</a>
+
+    <input type="text" name="email" class="form-control mb-2 searchEmail" placeholder="Search for Email Only...">
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered" id="usersTable">
+            <thead>
+            <tr>
+                <th>SN</th>
+                <th>Type</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
 @endsection
 @section('scripts')
     <script type="text/javascript">

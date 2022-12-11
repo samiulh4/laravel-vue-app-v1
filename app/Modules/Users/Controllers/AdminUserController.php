@@ -55,7 +55,7 @@ class AdminUserController extends Controller
 
     public function create()
     {
-
+        return view("Users::admin.create");
     }
 
 
