@@ -87,7 +87,7 @@
                                 <label class="input-group-text"><strong>Phone</strong></label>
                             </div>
                             <input type="text" name="phone_no" id="phone_no" class="form-control "
-                                   placeholder="Enter Phone"/>
+                                   placeholder="Enter Phone No"/>
                             @if ($errors->has('phone_no'))
                                 <span class="text-danger fs-6">
                                                 <strong>{{ $errors->first('phone_no') }}</strong>
@@ -101,7 +101,7 @@
                                 <label class="input-group-text"><strong>Mobile</strong></label>
                             </div>
                             <input type="text" name="mobile_no" id="mobile_no" class="form-control "
-                                   placeholder="Enter Phone"/>
+                                   placeholder="Enter Mobile No"/>
                             @if ($errors->has('mobile_no'))
                                 <span class="text-danger fs-6">
                                                 <strong>{{ $errors->first('mobile_no') }}</strong>
@@ -119,6 +119,34 @@
                             @if ($errors->has('date_of_birth'))
                                 <span class="text-danger fs-6">
                                                 <strong>{{ $errors->first('date_of_birth') }}</strong>
+                                            </span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text"><strong>National ID</strong></label>
+                            </div>
+                            <input type="text" name="national_id" id="national_id" class="form-control "
+                                   placeholder="Enter National ID"/>
+                            @if ($errors->has('national_id'))
+                                <span class="text-danger fs-6">
+                                                <strong>{{ $errors->first('national_id') }}</strong>
+                                            </span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text"><strong>Passport</strong></label>
+                            </div>
+                            <input type="text" name="national_id" id="passport_no" class="form-control "
+                                   placeholder="Enter Passport No"/>
+                            @if ($errors->has('passport_no'))
+                                <span class="text-danger fs-6">
+                                                <strong>{{ $errors->first('passport_no') }}</strong>
                                             </span>
                             @endif
                         </div>
