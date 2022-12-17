@@ -199,7 +199,7 @@
                     <div class="col-md-6 mt-3">
                         <div class="form-group">
                             <label class="form-label">Profile Picture</label>
-                            <input class="form-control" type="file" name="picture"
+                            <input class="form-control" type="file" name="picture" id="picture"
                                    onchange="imageUploadWithCroppingAndDetect(this, 'preview_picture', 'picture')"
                             />
                             @if ($errors->has('picture'))
@@ -250,7 +250,7 @@
                             <i class="fa fa-spinner fa-pulse"></i> Please wait, Face detecting
                         </div>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Understood</button>
+                        <button type="button" class="btn btn-primary" id="imageUploadModalSaveBtn">Save</button>
                     </div>
                 </div>
             </div>
@@ -267,7 +267,8 @@
                 var image_upload_modal_is_required = false;
                 var image_upload_modal_face_detect = false;
                 var image_upload_modal_img, image_upload_modal_raw_img, image_upload_modal_preview_img_id,
-                    image_upload_modal_base64_value_target,image_upload_modal_input_field;
+                    image_upload_modal_base64_value_name,image_upload_modal_base64_id,
+                    image_upload_modal_input_field;
 
                 $(document).ready(function () {
                     $("#wizard").steps({
@@ -321,7 +322,9 @@
                         // Configure dynamic data
                         image_upload_modal_input_field = input;
                         image_upload_modal_preview_img_id = img_preview_id;
-                        image_upload_modal_base64_value_target = base64_value_target;
+                        image_upload_modal_base64_value_name = base64_value_target;
+                        image_upload_modal_base64_id = image_upload_modal_input_field.id;
+                        console.log(input);
                         // Configure viewport height, width from input
                         if (input.getAttribute('size')) {
                             var viewport_size = input.getAttribute('size').split('x');
@@ -405,37 +408,35 @@
                         });
                     }
                 });// end -:- Image Modal Show Event
-                $('#imageUplaodModal-cropImageBtn').on('click', function (ev) {
-                    upload_crop_area.croppie('result', {
+                $('#imageUploadModalSaveBtn').on('click', function (ev) {
+                    image_upload_modal_img.croppie('result', {
                         type: 'base64',
                         format: 'jpeg',
-                        // size: 'original',
-                        size: {width: viewport_width, height: viewport_height}
-                    }).then(function (resp) {
-                        document.getElementById(img_preview_div_id).setAttribute('src', resp);
-                        document.getElementById(base64_value_field_id).value = resp;
-
-                        document.getElementById(input_field.id).setAttribute('disabled', true);
-                        $('#correspondent_signature').hide();
-
+                        size: {
+                            width: image_upload_modal_viewport_width,
+                            height: image_upload_modal_viewport_height
+                        }
+                    }).then(function (response) {
+                        document.getElementById(image_upload_modal_preview_img_id).setAttribute('src', response);
+                        document.getElementById(image_upload_modal_base64_id).value = response;
+                        document.getElementById(image_upload_modal_base64_id.id).setAttribute('disabled', true);
                         // Create reset button
-                        var preview_parent_div = document.getElementById(img_preview_div_id).parentNode.parentNode;
+                        var preview_parent_div = document.getElementById(image_upload_modal_preview_img_id).parentNode.parentNode;
                         var btn_elem = document.createElement("button");
                         btn_elem.type = 'button';
-                        btn_elem.id = 'reset_image_'.concat(input_field.id);
+                        btn_elem.id = 'reset_image_'.concat(image_upload_modal_base64_id.id);
                         btn_elem.innerHTML = 'Reset image';
                         btn_elem.className = 'btn btn-warning btn-xs';
-                        btn_elem.value = [input_field.id, base64_value_field_id, img_preview_div_id];
+                        btn_elem.value = [image_upload_modal_base64_id.id, image_upload_modal_base64_id, image_upload_modal_preview_img_id];
                         btn_elem.onclick = function () {
-                            // resetImage(input_field.id, base64_value_field_id, img_preview_div_id, this);
-                            resetImage(btn_elem.value, this);
+                            //resetImage(btn_elem.value, this);
                         };
                         preview_parent_div.parentNode.insertBefore(btn_elem, preview_parent_div.nextSibling);
                         // End Create reset button
 
-                        $('#' + Image_upload_modal_id).modal('hide');
+                        $('#' + image_upload_modal_id).modal('hide');
                     });
-                    upload_crop_area.croppie('destroy');
+                    image_upload_modal_img.croppie('destroy');
                 });
             </script>
 @endsection
