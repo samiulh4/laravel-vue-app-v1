@@ -1,1 +1,4 @@
 php artisan migrate:refresh --seed
+
+# Run Laravel Project with Different Port and Host Command:
+php artisan serve --host=localhost --port=9000
