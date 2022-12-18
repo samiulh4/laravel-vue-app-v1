@@ -97,6 +97,7 @@
 
 @include('partials.scripts')
 @yield('scripts')
+@yield('plugins')
 </body>
 
 </html>
