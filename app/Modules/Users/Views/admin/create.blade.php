@@ -323,8 +323,9 @@
                         image_upload_modal_input_field = input;
                         image_upload_modal_preview_img_id = img_preview_id;
                         image_upload_modal_base64_value_name = base64_value_target;
+                        //console.log(image_upload_modal_base64_value_name);
                         image_upload_modal_base64_id = image_upload_modal_input_field.id;
-                        console.log(input);
+                        //console.log(input);
                         // Configure viewport height, width from input
                         if (input.getAttribute('size')) {
                             var viewport_size = input.getAttribute('size').split('x');
