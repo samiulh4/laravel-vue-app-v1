@@ -261,6 +261,7 @@
                         }
                     );
                 });
+
                 function jsPreviewUploadedImage(img_data, img_preview_id) {
                     let file = img_data.files[0];
                     let file_type = file.type;
