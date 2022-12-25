@@ -1,0 +1,32 @@
+composer require laravel/socialite "^4.4.1"
+
+'providers' => [
+ // Other service providers…
+ Laravel\Socialite\SocialiteServiceProvider::class,
+ ],
+
+'aliases' => [
+ // Other aliases…
+ 'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+ ], 
+
+//Google
+Route::get('/login/google', [App\Http\Controllers\Auth\LoginController::class, 'redirectToGoogle'])->name('login.google');
+Route::get('/login/google/callback', [App\Http\Controllers\Auth\LoginController::class, 'handleGoogleCallback']);
+
+GOOGLE_CLIENT_ID=374623596053-rfq54r6f7pbi7ah5hag90v06fsrk7tcs.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+
+
+composer require guzzlehttp/guzzle "^6.5.8"
+
+You can still use "guzzlehttp/guzzle": "~5.3|~6.0", in your composer.json but you need to edit the following file in vendor/guzzlehttp/guzzle/src/Client.php
+
+Copy Code
+        $defaults = [
+            'allow_redirects' => RedirectMiddleware::$defaultSettings,
+            'http_errors'     => true,
+            'decode_content'  => true,
+            'verify'          => true, //  TO BE REPLACED by false
+            'cookies'         => false
+        ];

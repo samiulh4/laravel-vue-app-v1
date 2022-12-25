@@ -1,5 +1,6 @@
 <?php
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,8 +12,13 @@
 |
 */
 
+Auth::routes();
+
 Route::get('/', 'WelcomeController@index');
 Route::get('/vue', 'WelcomeController@vueTest');
 
-Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
+
+//Google Login
+Route::get('/login/google', 'Auth\LoginController@redirectToGoogle')->name('login.google');
+Route::get('/login/google/callback', 'Auth\LoginController@handleGoogleCallback');
