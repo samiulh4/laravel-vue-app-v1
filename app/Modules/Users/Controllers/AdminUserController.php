@@ -61,8 +61,36 @@ class AdminUserController extends Controller
 
     public function store(Request $request)
     {
+        if($request->ajax()){
+            
+            $user = new User;
 
-    }
+            $user->name = trim($request->name);
+            $user->email = trim($request->email);
+            $user->password = $request->user_type_id;
+            $user->user_type_id = $request->user_type_id;
+            $user->is_active = 0;
+            $user->access_portal = 2;
+            $user->phone_no = trim($request->phone_no);
+            $user->mobile_no = trim($request->mobile_no);
+            $user->national_id = trim($request->national_id);
+            $user->passport_no = trim($request->passport_no);
+            $user->date_of_birth = date('Y-m-d', strtotime(trim($request->date_of_birth)));
+
+           
+            $user->save();
+            //created_by
+
+            //photo
+
+            return response()->json([
+                'status' => true,
+                'message'=> 'User Information Store Successfully !'
+            ]);
+        }else{
+            return 'This request is not ajax !';
+        }
+    }// end -:- store()
 
 
     public function show($id)
@@ -77,7 +105,7 @@ class AdminUserController extends Controller
     }
 
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
 
     }
