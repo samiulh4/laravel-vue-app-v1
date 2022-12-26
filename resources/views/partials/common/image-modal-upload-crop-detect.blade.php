@@ -1,8 +1,8 @@
 <link href="{{ asset('assets/common/plugins/croppie-2.6.5/croppie.css') }}" rel="stylesheet">
 <style>
-/**
-    Custom CSS
-**/
+    /**
+        Custom CSS
+    **/
 </style>
 
 
@@ -19,12 +19,19 @@
                 <div id="image_upload_modal_crop_area" class="center-block"></div>
             </div><!-- ./modal-body -->
             <div class="modal-footer">
-                <div class="alert alert-success" role="alert">
-                    <i class="fa fa-spinner fa-pulse"></i> Please wait, Face detecting
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="alert alert-success" role="alert" id="imageUploadModalMessage">
+                            <i class="fa fa-spinner fa-pulse"></i> Please wait, Face detecting
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary float-left" id="imageUploadModalCloseBtn"
+                            data-bs-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="button" class="btn btn-dark float-right" id="imageUploadModalSaveBtn">Save</button>
                 </div>
-                <button type="button" class="btn btn-secondary" id="imageUploadModalCloseBtn" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-dark" id="imageUploadModalSaveBtn">Save</button>
-            </div>
+            </div><!-- ./modal-footer -->
         </div>
     </div>
 </div>
@@ -72,6 +79,10 @@
             reader.onload = function (e) {
                 // Show modal
                 $('#' + image_upload_modal_id).modal('show');
+                $('#imageUploadModalMessage').show();
+                $('#imageUploadModalCloseBtn').hide();
+                $('#imageUploadModalSaveBtn').hide();
+
                 // Create image element to face detect
                 document.getElementById(image_upload_modal_crop_area_id).innerHTML = "";
                 var img_elem = document.createElement("img");
@@ -116,7 +127,9 @@
                                 enforceBoundary: true, // Restricts zoom so image cannot be smaller than viewport
                                 enableResize: false, // Enable or disable support for resizing the viewport area
                             });
-                            console.log('faceDetection.complete');
+                            $('#imageUploadModalMessage').hide();
+                            $('#imageUploadModalCloseBtn').show();
+                            $('#imageUploadModalSaveBtn').show();
                         } else {
                             alert('Given image is not valid , (Can\'t recognize any face) !');
                             document.getElementById(image_upload_modal_img_id).remove();
@@ -153,19 +166,24 @@
             }
         }).then(function (response) {
             document.getElementById(image_upload_modal_preview_img_id).setAttribute('src', response);
-            var s =  document.getElementById(image_upload_modal_base64_target_id).value = response;
-            console.log(s);
-            document.getElementById(image_upload_modal_base64_id.id).setAttribute('disabled', true);
+            document.getElementById(image_upload_modal_base64_target_id).value = response;
+            document.getElementById(image_upload_modal_input_field.id).setAttribute('disabled', true);
+
             // Create reset button
-            var preview_parent_div = document.getElementById(image_upload_modal_preview_img_id).parentNode.parentNode;
+            var preview_parent_div = document.getElementById(image_upload_modal_preview_img_id).parentNode;
             var btn_elem = document.createElement("button");
             btn_elem.type = 'button';
-            btn_elem.id = 'reset_image_'.concat(image_upload_modal_base64_id.id);
+            btn_elem.id = 'reset_image_'.concat(image_upload_modal_input_field.id);
             btn_elem.innerHTML = 'Reset image';
-            btn_elem.className = 'btn btn-warning btn-xs';
-            btn_elem.value = [image_upload_modal_base64_id.id, image_upload_modal_base64_id, image_upload_modal_preview_img_id];
+            btn_elem.className = 'btn btn-warning btn-sm';
+            //picture,user_pic_base64,preview_picture
+            btn_elem.value = [image_upload_modal_input_field.id, image_upload_modal_base64_target_id, image_upload_modal_preview_img_id];
+
+            //btn_elem.style.height = '200px';
+            btn_elem.style.width = '200px';
+
             btn_elem.onclick = function () {
-                //resetImage(btn_elem.value, this);
+                resetImage(btn_elem.value, this);
             };
             preview_parent_div.parentNode.insertBefore(btn_elem, preview_parent_div.nextSibling);
             // End Create reset button
@@ -173,5 +191,17 @@
             $('#' + image_upload_modal_id).modal('hide');
         });
         image_upload_modal_img.croppie('destroy');
-    });
+    });// end -:- Save Button Click Event
+    function resetImage(input_details, elem) {
+        console.log('input_details =>' +input_details);
+        var input = input_details.split(',');
+        document.getElementById(input[0]).value = '';
+        if ($('#' + input[0] + '_hidden').length) {
+            document.getElementById(input[0] + '_hidden').value = '';
+        }
+        document.getElementById(input[0]).removeAttribute('disabled');
+        document.getElementById(input[1]).value = '';
+        document.getElementById(input[2]).setAttribute('src', '{{ url('assets/common/img/default.png') }}');
+        elem.remove();
+    }
 </script>

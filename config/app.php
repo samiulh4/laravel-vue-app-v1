@@ -168,6 +168,7 @@ return [
         ArtemSchander\L5Modular\ModuleServiceProvider::class,
         Yajra\Datatables\DatatablesServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
+        Laravel\Socialite\SocialiteServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -232,6 +233,7 @@ return [
          */
         'Datatables' => 'Yajra\Datatables\Facades\Datatables',
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
 
     ],
 
