@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
-use App\User;
+//use App\User;
+use App\Modules\Users\Models\User;
 
 class LoginController extends Controller
 {
@@ -44,23 +45,34 @@ class LoginController extends Controller
     {
         return Socialite::driver('google')->redirect();
     }
-    //Google callback  
+    //Google callback
     public function handleGoogleCallback()
     {
         try {
-            $data = Socialite::driver('google')->user();
-           // dd($data);
+            $loginData = Socialite::driver('google')->user();
+            //dd($loginData );
+
+
            $user = new User();
-           $user->name = $data->name;
-           $user->email = $data->email;
-           $user->password = bcrypt($data->name);
-           //$user->provider_id = $data->id;
-           $user->photo = $data->avatar;
+
+
+           $user->name = $loginData->name;
+           $user->email = $loginData->email;
+           $user->username = $loginData->email;
+           $user->password = bcrypt($loginData->email);
+
+           $user->provider_type_id = 1;
+           $user->provider_id = $loginData->getId();
+           $user->provider_token = $loginData->token;
+           $user->provider_refresh_token = $loginData->refreshToken;
+           $user->provider_expiry = $loginData->expiresIn;
+           $user->photo = $loginData->avatar;
            $user->save();
-            auth()->login($user); 
-            return redirect()->route('home');
+
+           auth()->login($user);
+           return redirect()->route('home');
         }catch (\Exception $e) {
-           echo $e->getMessage();
+           return $e->getMessage();
         }
     }
     protected function _registerOrLoginUser($data){
