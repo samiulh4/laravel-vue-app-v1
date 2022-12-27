@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
-//use App\User;
-use App\Modules\Users\Models\User;
+
+use App\User;
+
+//use App\Modules\Users\Models\User;
+use Carbon\Carbon;
 
 class LoginController extends Controller
 {
@@ -45,47 +49,32 @@ class LoginController extends Controller
     {
         return Socialite::driver('google')->redirect();
     }
+
     //Google callback
     public function handleGoogleCallback()
     {
         try {
             $loginData = Socialite::driver('google')->user();
-            //dd($loginData );
 
+            //$user = new User();
+            $user =  User::firstOrNew(['email' => $loginData->email]);
+            $user->name = $loginData->name;
+            $user->email = $loginData->email;
+            $user->username = $loginData->email;
+            $user->password = bcrypt($loginData->name);
+            $user->provider_type_id = 1;
+            $user->provider_id = $loginData->getId();
+            $user->provider_token = $loginData->token;
+            $user->provider_refresh_token = $loginData->refreshToken;
+            $user->provider_expiry = Carbon::now()->addSeconds($loginData->expiresIn);
+            $user->photo = $loginData->avatar;
+            $user->save();
 
-           $user = new User();
+            Auth()->login($user);
 
-
-           $user->name = $loginData->name;
-           $user->email = $loginData->email;
-           $user->username = $loginData->email;
-           $user->password = bcrypt($loginData->email);
-
-           $user->provider_type_id = 1;
-           $user->provider_id = $loginData->getId();
-           $user->provider_token = $loginData->token;
-           $user->provider_refresh_token = $loginData->refreshToken;
-           $user->provider_expiry = $loginData->expiresIn;
-           $user->photo = $loginData->avatar;
-           $user->save();
-
-           auth()->login($user);
-           return redirect()->route('home');
-        }catch (\Exception $e) {
-           return $e->getMessage();
+            return redirect()->route('home');
+        } catch (Exception $e) {
+            return $e->getMessage();
         }
     }
-    protected function _registerOrLoginUser($data){
-        $user = User::where('email', $data->email)->first();
-          if(!empty($user)){
-             $user = new User();
-             $user->name = $data->name;
-             $user->email = $data->email;
-             $user->password = bcrypt($data->name);
-             //$user->provider_id = $data->id;
-             $user->photo = $data->avatar;
-             $user->save();
-          }
-          return $user;
-        }
 }// end -:- LoginController

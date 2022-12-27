@@ -1,0 +1,27 @@
+composer require intervention/image "^2.7.2"
+
+return [
+
+    ......
+
+    $provides => [
+
+        ......
+
+        ......,
+
+        'Intervention\Image\ImageServiceProvider'
+
+    ],
+
+    $aliases => [
+
+        .....
+
+        .....,
+
+        'Image' => 'Intervention\Image\Facades\Image'
+
+    ]
+
+]
