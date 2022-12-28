@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 use App\Modules\Users\Models\User;
 use Illuminate\Support\Str;
+use Image;
+
 
 class AdminUserController extends Controller
 {
@@ -62,12 +64,12 @@ class AdminUserController extends Controller
     public function store(Request $request)
     {
         if($request->ajax()){
-            
+
             $user = new User;
 
             $user->name = trim($request->name);
             $user->email = trim($request->email);
-            $user->password = $request->user_type_id;
+            $user->password = bcrypt($request->password);
             $user->user_type_id = $request->user_type_id;
             $user->is_active = 0;
             $user->access_portal = 2;
@@ -77,7 +79,28 @@ class AdminUserController extends Controller
             $user->passport_no = trim($request->passport_no);
             $user->date_of_birth = date('Y-m-d', strtotime(trim($request->date_of_birth)));
 
-           
+            $user_pic_base64 = $request->user_pic_base64;
+            $pos = strpos($user_pic_base64, ';');
+            $picture_extention = explode('/', substr($user_pic_base64, 0, $pos))[1];
+            $picture_contents = file_get_contents($user_pic_base64);
+            $picture_name_temp = 'TEMP_'.date('YmdHis').'.'.$picture_extention;
+            $picture_name = 'USER_'.date('YmdHis').'.'.$picture_extention;
+            $picture_directory = public_path().'/uploads/images/users/';
+            $picture_link = 'uploads/images/users/'.$picture_name;
+
+            file_put_contents($picture_directory.$picture_name_temp,$picture_contents);
+
+            $picture_resize = Image::make($picture_directory.$picture_name_temp);
+            $picture_resize->fit(300, 300);
+            $picture_resize->save($picture_directory.$picture_name);
+
+
+
+
+            $user->photo = $picture_link;
+
+
+
             $user->save();
             //created_by
 

@@ -169,7 +169,7 @@ return [
         Yajra\Datatables\DatatablesServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
-        //'Intervention\Image\ImageServiceProvider',
+        'Intervention\Image\ImageServiceProvider',
         /*
          * Application Service Providers...
          */
@@ -235,7 +235,7 @@ return [
         'Datatables' => 'Yajra\Datatables\Facades\Datatables',
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
-        //'Image' => 'Intervention\Image\Facades\Image',
+        'Image' => 'Intervention\Image\Facades\Image',
     ],
 
 ];

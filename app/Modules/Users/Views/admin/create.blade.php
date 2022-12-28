@@ -142,6 +142,32 @@
                         @endif
                     </div>
                 </div>
+                <div class="col-md-6 mt-4">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text"><strong>Password</strong></label>
+                        </div>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Enter Password" />
+                        @if ($errors->has('passport_no'))
+                            <span class="text-danger fs-6">
+                            <strong>{{ $errors->first('password') }}</strong>
+                        </span>
+                        @endif
+                    </div>
+                </div>
+                <div class="col-md-6 mt-4">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text"><strong>Confirm Password</strong></label>
+                        </div>
+                        <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Enter Confirm Password" />
+                        @if ($errors->has('passport_no'))
+                            <span class="text-danger fs-6">
+                            <strong>{{ $errors->first('confirm_password') }}</strong>
+                        </span>
+                        @endif
+                    </div>
+                </div>
             </div><!-- ./row -->
         </fieldset>
         <!-- end -:- Basic Information -->
@@ -162,8 +188,8 @@
                             <option value="PK">Pakistan</option>
                             <option value="IN">India</option>
                         </select>
-                        @if ($errors->has('user_type_id'))
-                        <span class="text-danger"><strong>{{ $errors->first('user_type_id') }}</strong></span>
+                        @if ($errors->has('country_code'))
+                        <span class="text-danger"><strong>{{ $errors->first('country_code') }}</strong></span>
                         @endif
                     </div>
                 </div>
@@ -210,37 +236,11 @@
                 </div>
             </div>
         </fieldset>
-        <h2>Authenticate Information</h2>
+        <h2>Work & Education</h2>
         <fieldset>
             <div class="row">
 
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label class="input-group-text"><strong>Password</strong></label>
-                        </div>
-                        <input type="password" name="password" id="password" class="form-control" placeholder="Enter Password" />
-                        @if ($errors->has('passport_no'))
-                        <span class="text-danger fs-6">
-                            <strong>{{ $errors->first('passport_no') }}</strong>
-                        </span>
-                        @endif
-                    </div>
-                </div>
 
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label class="input-group-text"><strong>Confirm Password</strong></label>
-                        </div>
-                        <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Enter Confirm Password" />
-                        @if ($errors->has('passport_no'))
-                        <span class="text-danger fs-6">
-                            <strong>{{ $errors->first('passport_no') }}</strong>
-                        </span>
-                        @endif
-                    </div>
-                </div>
 
 
             </div>
@@ -264,9 +264,10 @@
             },
             onFinished: function(event, currentIndex) {
                 event.preventDefault();
-                if (confirm("Press a button!")) {
-                    var formData = document.getElementById("user-create-edit-step-form");
+                if (confirm("Are you sure ?")) {
+                    //var formData = document.getElementById("user-create-edit-step-form");
                     //form.submit();
+                    var formData = new FormData(document.querySelector('#user-create-edit-step-form'));
                     submitUserStoreOrUpdateStepForm(formData);
                 } else {
                     return false;
