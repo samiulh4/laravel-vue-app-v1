@@ -94,6 +94,10 @@ class AdminUserController extends Controller
             $picture_resize->fit(300, 300);
             $picture_resize->save($picture_directory.$picture_name);
 
+            if (file_exists($picture_directory.$picture_name_temp)) {
+                unlink($picture_directory.$picture_name_temp);
+            }
+
 
 
 
