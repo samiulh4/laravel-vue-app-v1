@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark" aria-label="Third navbar example">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Laravel5 Base App</a>
+    <a class="navbar-brand" href="#">Laravel Vue App V1</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -20,7 +20,7 @@
             Inside Us
           @else
             {{ Auth::user()->name }}
-          @endguest  
+          @endguest
           </a>
           <ul class="dropdown-menu" aria-labelledby="dropdown03">
           @guest
@@ -33,7 +33,7 @@
                   {{ csrf_field() }}
                 </form>
             </li>
-          @endguest  
+          @endguest
           </ul>
         </li>
 

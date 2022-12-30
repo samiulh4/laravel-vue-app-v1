@@ -22,3 +22,6 @@ Route::get('/home', 'HomeController@index')->name('home');
 //Google Login
 Route::get('/login/google', 'Auth\LoginController@redirectToGoogle')->name('login.google');
 Route::get('/login/google/callback', 'Auth\LoginController@handleGoogleCallback');
+
+// Error Handler
+Route::get('web/error/handler/{code}/{message}', 'Error\ErrorController@redirectToWebErrorHandle')->name('web.error.handler');

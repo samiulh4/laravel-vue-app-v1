@@ -13,7 +13,7 @@ class DashboardController extends Controller
 
     public function webDashboard()
     {
-        //return view("Dashboards::index");
+        return view("Dashboards::web-dashboard");
     }
 
     public function adminDashboard()
