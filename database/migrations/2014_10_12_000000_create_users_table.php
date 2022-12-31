@@ -36,6 +36,10 @@ class CreateUsersTable extends Migration
             $table->string('provider_refresh_token', 255)->nullable();
             $table->dateTime('provider_expiry')->nullable();
 
+
+            $table->string('cv_pdf_link', 255)->nullable();
+            $table->string('bio_pdf_link', 255)->nullable();
+
             $table->rememberToken();
             $table->bigInteger('created_by')->unsigned()->nullable();
             $table->bigInteger('updated_by')->unsigned()->nullable();
