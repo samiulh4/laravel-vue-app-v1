@@ -57,8 +57,8 @@
             });
         });
 
-        function openViewModalSmJs(row) {
-            $('#staticBackdrop').modal('show');
+        function openViewModal(row) {
+            $('#adminViewModal').modal('show');
         }
     </script>
 @endsection

@@ -8,8 +8,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 use App\Modules\Users\Models\User;
+use App\Modules\Users\Models\UserEducationInfo;
 use Illuminate\Support\Str;
 use Image;
+
 
 
 class AdminUserController extends Controller
@@ -43,7 +45,7 @@ class AdminUserController extends Controller
 
                 })
                 ->addColumn('action', function($row){
-                    $btn = "<a href='javascript:void(0)' onclick='javascript:openViewModalSmJs($row->id)' class='btn btn-sm btn-info' title='View'><i class='fa-solid fa-eye'></i></a>";
+                    $btn = "<a href='javascript:void(0)' onclick='javascript:openViewModal($row->id)' class='btn btn-sm btn-info' title='View'><i class='fa-solid fa-eye'></i></a>";
                     $btn = $btn.'<a href="javascript:void(0)" class="btn btn-sm btn-primary" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>';
                     $btn = $btn.'<a href="javascript:void(0)" class="btn btn-sm btn-danger" title="Delete"><i class="fa-solid fa-trash"></i></a>';
                     return $btn;
@@ -64,56 +66,79 @@ class AdminUserController extends Controller
     public function store(Request $request)
     {
         if($request->ajax()){
+            DB::beginTransaction();
+            try {
+                $user = new User;
 
-            $user = new User;
+                $user->name = trim($request->name);
+                $user->email = trim($request->email);
+                $user->password = bcrypt($request->password);
+                $user->user_type_id = $request->user_type_id;
+                $user->is_active = 0;
+                $user->access_portal = 2;
+                $user->phone_no = trim($request->phone_no);
+                $user->mobile_no = trim($request->mobile_no);
+                $user->national_id = trim($request->national_id);
+                $user->passport_no = trim($request->passport_no);
+                $user->date_of_birth = date('Y-m-d', strtotime(trim($request->date_of_birth)));
 
-            $user->name = trim($request->name);
-            $user->email = trim($request->email);
-            $user->password = bcrypt($request->password);
-            $user->user_type_id = $request->user_type_id;
-            $user->is_active = 0;
-            $user->access_portal = 2;
-            $user->phone_no = trim($request->phone_no);
-            $user->mobile_no = trim($request->mobile_no);
-            $user->national_id = trim($request->national_id);
-            $user->passport_no = trim($request->passport_no);
-            $user->date_of_birth = date('Y-m-d', strtotime(trim($request->date_of_birth)));
+                $user_pic_base64 = $request->user_pic_base64;
+                $pos = strpos($user_pic_base64, ';');
+                $picture_extention = explode('/', substr($user_pic_base64, 0, $pos))[1];
+                $picture_contents = file_get_contents($user_pic_base64);
+                $picture_name_temp = 'TEMP_'.date('YmdHis').'.'.$picture_extention;
+                $picture_name = 'USER_'.date('YmdHis').'.'.$picture_extention;
+                $picture_directory = public_path().'/uploads/images/users/';
+                $picture_link = 'uploads/images/users/'.$picture_name;
 
-            $user_pic_base64 = $request->user_pic_base64;
-            $pos = strpos($user_pic_base64, ';');
-            $picture_extention = explode('/', substr($user_pic_base64, 0, $pos))[1];
-            $picture_contents = file_get_contents($user_pic_base64);
-            $picture_name_temp = 'TEMP_'.date('YmdHis').'.'.$picture_extention;
-            $picture_name = 'USER_'.date('YmdHis').'.'.$picture_extention;
-            $picture_directory = public_path().'/uploads/images/users/';
-            $picture_link = 'uploads/images/users/'.$picture_name;
+                file_put_contents($picture_directory.$picture_name_temp,$picture_contents);
 
-            file_put_contents($picture_directory.$picture_name_temp,$picture_contents);
+                $picture_resize = Image::make($picture_directory.$picture_name_temp);
+                $picture_resize->fit(300, 300);
+                $picture_resize->save($picture_directory.$picture_name);
 
-            $picture_resize = Image::make($picture_directory.$picture_name_temp);
-            $picture_resize->fit(300, 300);
-            $picture_resize->save($picture_directory.$picture_name);
+                if (file_exists($picture_directory.$picture_name_temp)) {
+                    unlink($picture_directory.$picture_name_temp);
+                }
 
-            if (file_exists($picture_directory.$picture_name_temp)) {
-                unlink($picture_directory.$picture_name_temp);
+
+
+
+                $user->photo = $picture_link;
+
+
+
+                $user->save();
+                $user_id = $user->id;
+
+                $education_title = $request->education_title;
+                $education_result = $request->education_result;
+                $education_institution = $request->education_institution;
+
+                if(!empty($education_title[0])){
+                    for ($i = 0; $i<count($education_title); $i++){
+                        $userEducationInfo = new UserEducationInfo;
+
+                        $userEducationInfo->user_id = $user_id;
+                        $userEducationInfo->education_title = $education_title[$i];
+                        $userEducationInfo->education_result = $education_result[$i];
+                        $userEducationInfo->education_institution = $education_institution[$i];
+
+                        $userEducationInfo->save();
+                    }
+                }
+                DB::commit();
+                return response()->json([
+                    'responseStatus' => true,
+                    'message'=> 'User information store successfully.'
+                ]);
+            } catch (\Exception $e) {
+                DB::rollback();
+                return response()->json([
+                    'responseStatus' => false,
+                    'message'=> $e->getMessage()
+                ]);
             }
-
-
-
-
-            $user->photo = $picture_link;
-
-
-
-            $user->save();
-            //created_by
-
-            //photo
-
-            return response()->json([
-                'status' => true,
-                'message'=> 'User Information Store Successfully !'
-            ]);
         }else{
             return 'This request is not ajax !';
         }
