@@ -41,21 +41,19 @@
                     <div class="col-md-6">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <label class="input-group-text"><strong>Name</strong></label>
+                                <label for="name" class="input-group-text"><strong>Name</strong></label>
                             </div>
                             <input type="text" name="name" id="name" class="form-control"
                                    placeholder="Enter Full Name"/>
                             @if ($errors->has('name'))
-                                <span class="text-danger fs-6">
-                            <strong>{{ $errors->first('name') }}</strong>
-                        </span>
+                                <span class="text-danger fs-6 errorMessage"><strong>{{ $errors->first('name') }}</strong></span>
                             @endif
                         </div>
                     </div>
                     <div class="col-md-6 mt-4">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <label class="input-group-text"><strong>E-Mail</strong></label>
+                                <label for="email" class="input-group-text"><strong>E-Mail</strong></label>
                             </div>
                             <input type="text" name="email" id="email" class="form-control "
                                    placeholder="Enter E-mail"/>
@@ -266,11 +264,11 @@
                         <tbody>
                         <tr id='addr0' date-id="0">
                             <td data-name="education_title[]"><input type="text" class="form-control"
-                                                                   name="education_title"/></td>
+                                                                     name="education_title"/></td>
                             <td data-name="education_result[]"><input type="text" class="form-control"
-                                                                    name="education_result"/></td>
+                                                                      name="education_result"/></td>
                             <td data-name="education_institution[]"><input type="text" class="form-control"
-                                                                         name="education_institution"/></td>
+                                                                           name="education_institution"/></td>
                             <td data-name="del">
                                 <button type="button" class="btn btn-sm btn-danger row-remove">-</button>
                             </td>
@@ -287,8 +285,32 @@
     </form>
 @endsection
 @section('scripts')
+    <script src="{{ asset('assets/common/plugins/jquery-validation/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('assets/common/plugins/jquery-validation/additional-methods.min.js') }}"></script>
     <script type="text/javascript">
+        var formTag = document.getElementById('user-create-edit-step-form');
+        var formData = new FormData(document.querySelector('#user-create-edit-step-form'));
+        var form = $("#user-create-edit-step-form");
+
+
         $(document).ready(function () {
+            form.validate({
+                errorPlacement: function(error, element) {
+                    //console.log(element);
+                    if(element.attr("name") === "name") {
+                        error.appendTo(".errorMessage");
+                    }
+                },
+                rules:{
+                    name : "required",
+                    email: "required",
+                },messages:{
+                    name : "Please enter your name !",
+                    email : "Please enter your name !",
+                },submitHandler:function(form){
+                    //alert('Sumit');
+                }
+            });
             $("#wizard").steps({
                 headerTag: "h2",
                 bodyTag: "fieldset",
@@ -299,11 +321,21 @@
                     finish: "Submit",
                     loading: "Loading ...",
                 },
+                onStepChanged: function(event, currentIndex,newIndex) {
+                    console.log(event);
+                    //alert(currentIndex +'-'+ newIndex);
+                    //console.log($(formTag).valid());
+                    //$('#user-create-edit-step-form').valid();
+                    form.validate().settings.ignore = ":disabled,:hidden";
+                    if(form.valid()){
+                        //alert('Hello');
+                        return false;
+                    }
+                    //return form.valid();
+                },
                 onFinished: function (event, currentIndex) {
                     event.preventDefault();
                     if (confirm("Are you sure ?")) {
-                        //var formData = document.getElementById("user-create-edit-step-form");
-                        //form.submit();
                         var formData = new FormData(document.querySelector('#user-create-edit-step-form'));
                         submitUserStoreOrUpdateStepForm(formData);
                     } else {
@@ -315,6 +347,15 @@
                 maxDate: '0',
                 dateFormat: 'yy-mm-dd'
             });
+            $('#user-create-edit-step-form').validate({
+                rules: {
+                    field: {
+                        required: true,
+                        step: 1
+                    }
+                }
+            });
+
             $("#add_row").on("click", function (e) {
                 e.preventDefault();
                 let newid = 0;
@@ -371,7 +412,7 @@
                 },
                 success: function (response) {
                     if(response.status == true)
-                    console.log(response);
+                        console.log(response);
                 },
                 error: function (response) {
                     alert('Error is occored !');
