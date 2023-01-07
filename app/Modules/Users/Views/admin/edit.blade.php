@@ -2,13 +2,14 @@
 @section('styles')
     @include('partials.steps-form')
     <style>
-        /*select.error {*/
-        /*    border: 1px solid #CC0000*/
-        /*}*/
-        select.form-control.error {
+        select.form-select.error {
             background: rgb(251, 227, 228);
-            border: 1px solid #fbc2c4;
-            color: #8a1f11;
+            /*border: 1px solid red;
+            color: black;*/
+        }
+        .errorMessage{
+            font-size: 14px;
+            font-weight: bold;
         }
     </style>
 @endsection
@@ -53,7 +54,7 @@
                                 <label for="name" class="input-group-text"><strong>Name</strong></label>
                             </div>
                             <input type="text" name="name" id="name" class="form-control"
-                                   placeholder="Enter Full Name"/>
+                                   placeholder="Enter Full Name" value="{{ $editData->name }}"/>
                             @if ($errors->has('name'))
                                 <span class="text-danger fs-6 errorMessage"><strong>{{ $errors->first('name') }}</strong></span>
                             @endif
@@ -66,7 +67,7 @@
                                 <label for="email" class="input-group-text"><strong>E-Mail</strong></label>
                             </div>
                             <input type="text" name="email" id="email" class="form-control "
-                                   placeholder="Enter E-mail"/>
+                                   placeholder="Enter E-mail" value="{{ $editData->email }}"/>
                             @if ($errors->has('email'))
                                 <span class="text-danger fs-6">
                             <strong>{{ $errors->first('email') }}</strong>
@@ -79,7 +80,7 @@
                             <div class="input-group-prepend">
                                 <label class="input-group-text"><strong>Username</strong></label>
                             </div>
-                            <input type="text" name="username" id="username" class="form-control "
+                            <input type="text" name="username" id="username" class="form-control"
                                    placeholder="Enter Username"/>
                             @if ($errors->has('username'))
                                 <span class="text-danger fs-6">

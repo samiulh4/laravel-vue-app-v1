@@ -2,6 +2,7 @@
 
 namespace App\Modules\Users\Controllers;
 
+use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -11,7 +12,7 @@ use App\Modules\Users\Models\User;
 use App\Modules\Users\Models\UserEducationInfo;
 use Illuminate\Support\Str;
 use Image;
-
+use Illuminate\Contracts\Encryption\DecryptException;
 
 
 class AdminUserController extends Controller
@@ -33,9 +34,9 @@ class AdminUserController extends Controller
 
                     if (!empty($request->get('search'))) {
                         $instance->collection = $instance->collection->filter(function ($row) use ($request) {
-                            if (Str::contains(Str::lower($row['email']), Str::lower($request->get('search')))){
+                            if (Str::contains(Str::lower($row['email']), Str::lower($request->get('search')))) {
                                 return true;
-                            }else if (Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
+                            } else if (Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
                                 return true;
                             }
 
@@ -44,10 +45,15 @@ class AdminUserController extends Controller
                     }
 
                 })
-                ->addColumn('action', function($row){
-                    $btn = "<a href='javascript:void(0)' onclick='javascript:openViewModal($row->id)' class='btn btn-sm btn-info' title='View'><i class='fa-solid fa-eye'></i></a>";
-                    $btn = $btn.'<a href="javascript:void(0)" class="btn btn-sm btn-primary" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>';
-                    $btn = $btn.'<a href="javascript:void(0)" class="btn btn-sm btn-danger" title="Delete"><i class="fa-solid fa-trash"></i></a>';
+                ->addColumn('action', function ($row) {
+
+                    $encoded_row_id = encrypt($row->id);
+
+                    $editUrl = url('/admin/user/edit', $encoded_row_id);
+
+                    $btn = "<a href='javascript:void(0)' onclick='openViewModal($row->id)' class='btn btn-sm btn-info' title='View'><i class='fa-solid fa-eye'></i></a>";
+                    $btn = $btn . '<a href="'.$editUrl.'" class="btn btn-sm btn-primary" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>';
+                    $btn = $btn . '<a href="javascript:void(0)" class="btn btn-sm btn-danger" title="Delete"><i class="fa-solid fa-trash"></i></a>';
                     return $btn;
                 })
                 ->rawColumns(['action'])
@@ -55,7 +61,21 @@ class AdminUserController extends Controller
         }
         return view("Users::admin.index");
     }
-
+    public function edit($id)
+    {
+        try {
+            $decoded_row_id  = decrypt($id); 
+            $editData = User::where('id', $decoded_row_id)->first();
+            if(empty($editData)){
+                die('No Data Found');
+            }
+            return view("Users::admin.edit", compact('editData'));
+        } catch (DecryptException $e) {
+            return $e->getMessage();
+        }catch(\Exception $e){
+            return $e->getMessage();
+        }
+    }// end -:- edit()
 
     public function create()
     {
@@ -65,7 +85,7 @@ class AdminUserController extends Controller
 
     public function store(Request $request)
     {
-        if($request->ajax()){
+        if ($request->ajax()) {
             DB::beginTransaction();
             try {
                 $user = new User;
@@ -86,26 +106,23 @@ class AdminUserController extends Controller
                 $pos = strpos($user_pic_base64, ';');
                 $picture_extention = explode('/', substr($user_pic_base64, 0, $pos))[1];
                 $picture_contents = file_get_contents($user_pic_base64);
-                $picture_name_temp = 'TEMP_'.date('YmdHis').'.'.$picture_extention;
-                $picture_name = 'USER_'.date('YmdHis').'.'.$picture_extention;
-                $picture_directory = public_path().'/uploads/images/users/';
-                $picture_link = 'uploads/images/users/'.$picture_name;
+                $picture_name_temp = 'TEMP_' . date('YmdHis') . '.' . $picture_extention;
+                $picture_name = 'USER_' . date('YmdHis') . '.' . $picture_extention;
+                $picture_directory = public_path() . '/uploads/images/users/';
+                $picture_link = 'uploads/images/users/' . $picture_name;
 
-                file_put_contents($picture_directory.$picture_name_temp,$picture_contents);
+                file_put_contents($picture_directory . $picture_name_temp, $picture_contents);
 
-                $picture_resize = Image::make($picture_directory.$picture_name_temp);
+                $picture_resize = Image::make($picture_directory . $picture_name_temp);
                 $picture_resize->fit(300, 300);
-                $picture_resize->save($picture_directory.$picture_name);
+                $picture_resize->save($picture_directory . $picture_name);
 
-                if (file_exists($picture_directory.$picture_name_temp)) {
-                    unlink($picture_directory.$picture_name_temp);
+                if (file_exists($picture_directory . $picture_name_temp)) {
+                    unlink($picture_directory . $picture_name_temp);
                 }
 
 
-
-
                 $user->photo = $picture_link;
-
 
 
                 $user->save();
@@ -115,8 +132,8 @@ class AdminUserController extends Controller
                 $education_result = $request->education_result;
                 $education_institution = $request->education_institution;
 
-                if(!empty($education_title[0])){
-                    for ($i = 0; $i<count($education_title); $i++){
+                if (!empty($education_title[0])) {
+                    for ($i = 0; $i < count($education_title); $i++) {
                         $userEducationInfo = new UserEducationInfo;
 
                         $userEducationInfo->user_id = $user_id;
@@ -130,16 +147,16 @@ class AdminUserController extends Controller
                 DB::commit();
                 return response()->json([
                     'responseStatus' => true,
-                    'message'=> 'User information store successfully.'
+                    'message' => 'User information store successfully.'
                 ]);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 DB::rollback();
                 return response()->json([
                     'responseStatus' => false,
-                    'message'=> $e->getMessage()
+                    'message' => $e->getMessage()
                 ]);
             }
-        }else{
+        } else {
             return 'This request is not ajax !';
         }
     }// end -:- store()
@@ -151,10 +168,7 @@ class AdminUserController extends Controller
     }
 
 
-    public function edit($id)
-    {
 
-    }
 
 
     public function update(Request $request)
@@ -163,8 +177,4 @@ class AdminUserController extends Controller
     }
 
 
-    public function destroy($id)
-    {
-
-    }
-}
+}// end -:- AdminUserController
