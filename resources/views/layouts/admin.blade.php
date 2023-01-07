@@ -11,20 +11,20 @@
     <title>@yield('title', 'Laravel Vue App V1 | Admin')</title>
     <!-- Jquery -->
     <script src="{{ asset('assets/plugins/jquery/jquery-3.6.0.min.js') }}"></script>
-    @include('partials.styles')
+    @include('partials.admin.styles')
     @yield('styles')
 </head>
 
 <body id="page-top">
 
-<div id="page-wrapper">
+<div id="body-wrapper">
     @include('partials.admin.nav')
-    <div class="container-fluid mt-3" id="content-wrapper">
+    <div class="container-fluid mt-3" id="page-wrapper">
         <div class="row">
             <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3" id="sidebar-wrapper">
                 @include('partials.admin.sidebar')
             </div>
-            <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9">
+            <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9" id="content-wrapper">
                 @yield('breadcrumb')
                 @yield('content')
                 @include('partials.admin.footer')

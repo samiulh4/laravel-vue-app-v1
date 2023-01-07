@@ -1,6 +1,16 @@
 @extends('layouts.admin')
 @section('styles')
     @include('partials.steps-form')
+    <style>
+        /*select.error {*/
+        /*    border: 1px solid #CC0000*/
+        /*}*/
+        select.form-control.error {
+            background: rgb(251, 227, 228);
+            border: 1px solid #fbc2c4;
+            color: #8a1f11;
+        }
+    </style>
 @endsection
 @section('breadcrumb')
     <nav aria-label="breadcrumb">
@@ -22,6 +32,7 @@
             <fieldset>
                 <div class="row">
                     <div class="col-md-6">
+                        <span class="text-danger errorMessage"><strong></strong></span>
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <label class="input-group-text"><strong>User Type</strong></label>
@@ -33,29 +44,26 @@
                                 <option value="3">User</option>
                                 <option value="4">Guest</option>
                             </select>
-                            @if ($errors->has('user_type_id'))
-                                <span class="text-danger"><strong>{{ $errors->first('user_type_id') }}</strong></span>
-                            @endif
                         </div>
                     </div>
                     <div class="col-md-6">
+                        <span class="text-danger errorMessage"><strong></strong></span>
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <label class="input-group-text"><strong>Name</strong></label>
+                                <label for="name" class="input-group-text"><strong>Name</strong></label>
                             </div>
                             <input type="text" name="name" id="name" class="form-control"
                                    placeholder="Enter Full Name"/>
                             @if ($errors->has('name'))
-                                <span class="text-danger fs-6">
-                            <strong>{{ $errors->first('name') }}</strong>
-                        </span>
+                                <span class="text-danger fs-6 errorMessage"><strong>{{ $errors->first('name') }}</strong></span>
                             @endif
                         </div>
                     </div>
                     <div class="col-md-6 mt-4">
+                        <span class="text-danger errorMessage"></span>
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <label class="input-group-text"><strong>E-Mail</strong></label>
+                                <label for="email" class="input-group-text"><strong>E-Mail</strong></label>
                             </div>
                             <input type="text" name="email" id="email" class="form-control "
                                    placeholder="Enter E-mail"/>
@@ -151,9 +159,10 @@
                         </div>
                     </div>
                     <div class="col-md-6 mt-4">
+                        <span class="text-danger errorMessage"><strong></strong></span>
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <label class="input-group-text"><strong>Password</strong></label>
+                                <label for="password" class="input-group-text"><strong>Password</strong></label>
                             </div>
                             <input type="password" name="password" id="password" class="form-control"
                                    placeholder="Enter Password"/>
@@ -266,11 +275,11 @@
                         <tbody>
                         <tr id='addr0' date-id="0">
                             <td data-name="education_title[]"><input type="text" class="form-control"
-                                                                   name="education_title"/></td>
+                                                                     name="education_title"/></td>
                             <td data-name="education_result[]"><input type="text" class="form-control"
-                                                                    name="education_result"/></td>
+                                                                      name="education_result"/></td>
                             <td data-name="education_institution[]"><input type="text" class="form-control"
-                                                                         name="education_institution"/></td>
+                                                                           name="education_institution"/></td>
                             <td data-name="del">
                                 <button type="button" class="btn btn-sm btn-danger row-remove">-</button>
                             </td>
@@ -287,8 +296,55 @@
     </form>
 @endsection
 @section('scripts')
+    <script src="{{ asset('assets/common/plugins/jquery-validation/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('assets/common/plugins/jquery-validation/additional-methods.min.js') }}"></script>
     <script type="text/javascript">
+        var formName = '#user-create-edit-step-form';
+        var formEl = $(formName);
+        var formData = new FormData(document.querySelector(formName));
+
+        //var formTag = document.getElementById('user-create-edit-step-form');
+        var error = $('.errorMessage', formEl);
+
+
+
+
         $(document).ready(function () {
+            formEl.validate({
+                errorPlacement: function(error, element) {
+                    // if(element.attr("name") === "name") {
+                    //     error.appendTo(".errorMessage");
+                    // }
+                    $(element).parent().siblings('.errorMessage').html(error);
+                },
+                rules:{
+                    user_type_id: {
+                        required: true,
+                    },
+                    name : "required",
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    password: {
+                        required: true,
+                        minlength: 5
+                    }
+                },messages:{
+                    user_type_id : "Please enter user type !",
+                    name : "Please enter name !",
+                    email : "Please enter email !",
+                    password: {
+                        required: "Please provide a password",
+                        minlength: "Your password must be at least 6 characters long"
+                    },
+                },invalidHandler: function(form, validator) {
+                    //error.show();
+                    //var errors = validator.numberOfInvalids();
+                },submitHandler:function(form){
+                    //alert('Sumit');
+                }
+            });
             $("#wizard").steps({
                 headerTag: "h2",
                 bodyTag: "fieldset",
@@ -299,11 +355,20 @@
                     finish: "Submit",
                     loading: "Loading ...",
                 },
+                onStepChanging: function (event, currentIndex, newIndex){
+                    formEl.validate().settings.ignore = ":disabled,:hidden";
+                    return formEl.valid();
+                },
+                onStepChanged: function(event, currentIndex, newIndex) {
+
+                },
                 onFinished: function (event, currentIndex) {
                     event.preventDefault();
+                    /*formEl.validate().settings.ignore = ":disabled,:hidden";
+                    if(formTag.valid() == false){
+                        return false;
+                    }*/
                     if (confirm("Are you sure ?")) {
-                        //var formData = document.getElementById("user-create-edit-step-form");
-                        //form.submit();
                         var formData = new FormData(document.querySelector('#user-create-edit-step-form'));
                         submitUserStoreOrUpdateStepForm(formData);
                     } else {
@@ -315,6 +380,15 @@
                 maxDate: '0',
                 dateFormat: 'yy-mm-dd'
             });
+            $('#user-create-edit-step-form').validate({
+                rules: {
+                    field: {
+                        required: true,
+                        step: 1
+                    }
+                }
+            });
+
             $("#add_row").on("click", function (e) {
                 e.preventDefault();
                 let newid = 0;
@@ -371,7 +445,7 @@
                 },
                 success: function (response) {
                     if(response.status == true)
-                    console.log(response);
+                        console.log(response);
                 },
                 error: function (response) {
                     alert('Error is occored !');
@@ -397,6 +471,18 @@
                 reader.readAsDataURL(file);
             }
         } // end -:- jsPreviewUploadedImage()
+        function isValidPhoneDigits(val) {
+            var intRegex = /^\d+$/;
+            var floatRegex = /^((\d+(\.\d *)?)|((\d*\.)?\d+))$/;
+
+            if(intRegex.test(val) || floatRegex.test(val)) {
+                return true;
+            } else {return false}
+
+            if(intRegex.test(val) || floatRegex.test(val)) {
+                return true;
+            } else {return false}
+        }
     </script>
 @endsection
 @section('plugins')
