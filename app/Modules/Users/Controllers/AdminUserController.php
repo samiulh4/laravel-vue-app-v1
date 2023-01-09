@@ -46,11 +46,8 @@ class AdminUserController extends Controller
 
                 })
                 ->addColumn('action', function ($row) {
-
                     $encoded_row_id = encrypt($row->id);
-
                     $editUrl = url('/admin/user/edit', $encoded_row_id);
-
                     $btn = "<a href='javascript:void(0)' onclick='openViewModal($row->id)' class='btn btn-sm btn-info' title='View'><i class='fa-solid fa-eye'></i></a>";
                     $btn = $btn . '<a href="'.$editUrl.'" class="btn btn-sm btn-primary" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>';
                     $btn = $btn . '<a href="javascript:void(0)" class="btn btn-sm btn-danger" title="Delete"><i class="fa-solid fa-trash"></i></a>';
@@ -64,7 +61,7 @@ class AdminUserController extends Controller
     public function edit($id)
     {
         try {
-            $decoded_row_id  = decrypt($id); 
+            $decoded_row_id  = decrypt($id);
             $editData = User::where('id', $decoded_row_id)->first();
             if(empty($editData)){
                 die('No Data Found');

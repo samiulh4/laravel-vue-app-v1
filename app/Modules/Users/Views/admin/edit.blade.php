@@ -11,6 +11,9 @@
             font-size: 14px;
             font-weight: bold;
         }
+        .input-group-text{
+            margin: 0px!important;
+        }
     </style>
 @endsection
 @section('breadcrumb')
@@ -40,7 +43,7 @@
                             </div>
                             <select name="user_type_id" id="user_type_id" class="form-select">
                                 <option value="">--Select User Type--</option>
-                                <option value="1">Super Admin</option>
+                                <option value="1" selected>Super Admin</option>
                                 <option value="2">Admin</option>
                                 <option value="3">User</option>
                                 <option value="4">Guest</option>
@@ -263,25 +266,28 @@
             <h2>Work & Education</h2>
             <fieldset>
                 <div class="row">
-                    <h3>User Educational Information</h3>
-                    <table class="table" id="user_education_info">
+                    <h4>User Educational Information</h4>
+                    <table class="table" id="userEducationInfoTb">
                         <thead>
                         <th>Tile</th>
                         <th>Result</th>
                         <th>Institution</th>
                         <th>
-                            <butto class="btn btn-sm btn-secondary" id="add_row">+</butto>
+                            <butto class="btn btn-sm btn-secondary" onclick="addTableRow('userEducationInfoTb', 'userEducationInfoTr')">+</butto>
                         </th>
                         </thead>
                         <tbody>
-                        <tr id='addr0' date-id="0">
-                            <td data-name="education_title[]"><input type="text" class="form-control"
-                                                                     name="education_title"/></td>
-                            <td data-name="education_result[]"><input type="text" class="form-control"
-                                                                      name="education_result"/></td>
-                            <td data-name="education_institution[]"><input type="text" class="form-control"
-                                                                           name="education_institution"/></td>
-                            <td data-name="del">
+                        <tr id="userEducationInfoTr0" data-number="1">
+                            <td data-name="education_title">
+                                <input type="text" class="form-control" name="education_title[]"/>
+                            </td>
+                            <td data-name="education_result">
+                                <input type="text" class="form-control" name="education_result[]"/>
+                            </td>
+                            <td data-name="education_institution">
+                                <input type="text" class="form-control" name="education_institution[]"/>
+                            </td>
+                            <td data-name="delete_row">
                                 <button type="button" class="btn btn-sm btn-danger row-remove">-</button>
                             </td>
                         </tr>
@@ -326,19 +332,11 @@
                     email: {
                         required: true,
                         email: true
-                    },
-                    password: {
-                        required: true,
-                        minlength: 5
                     }
                 },messages:{
                     user_type_id : "Please enter user type !",
                     name : "Please enter name !",
                     email : "Please enter email !",
-                    password: {
-                        required: "Please provide a password",
-                        minlength: "Your password must be at least 6 characters long"
-                    },
                 },invalidHandler: function(form, validator) {
                     //error.show();
                     //var errors = validator.numberOfInvalids();
@@ -484,6 +482,47 @@
                 return true;
             } else {return false}
         }
+
+        // Add table Row script
+        function addTableRow2(tableID, template_row_id)
+        {
+            let i;
+            // Copy the template row (first row) of table and reset the ID and Styling
+            const new_row = document.getElementById(template_row_id).cloneNode(true);
+            new_row.id = "";
+            //new_row.style.display = "";
+
+            // Get the total row number, and last row number of table
+            let current_total_row = $('#' + tableID).find('tbody tr').length;
+            let final_total_row = current_total_row + 1;
+            //console.log('final_total_row', final_total_row);
+
+            // Generate an ID of the new Row, set the row id and append the new row into table
+            let last_row_number = $('#' + tableID).find('tbody tr').last().attr('data-number');
+            if (last_row_number != '' && typeof last_row_number !== "undefined") {
+                last_row_number = parseInt(last_row_number) + 1;
+            } else {
+                last_row_number = Math.floor(Math.random() * 101);
+            }
+            //console.log('last_row_number', last_row_number);
+
+            const new_row_id = 'rowCount' + tableID + last_row_number;
+            new_row.id = new_row_id;
+            $("#" + tableID).append(new_row);
+
+        }// end -:- addTableRow()
+        function addTableRow(tableId, rowIdTemplate)
+        {
+            let current_total_tr = $('#' + tableId).find('tbody tr').length;
+            if(current_total_tr <= 0){
+                alert('No Template Row Found !');
+                return false;
+            }
+            let new_tr_id = current_total_tr;
+            const template_row_id = $('#' + tableId).find('tbody tr').first().attr('id');
+            const new_row = document.getElementById(template_row_id).cloneNode(true);
+            console.log(new_row);
+        }// end -:- addTableRow()
     </script>
 @endsection
 @section('plugins')
