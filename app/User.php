@@ -20,6 +20,7 @@ class User extends Authenticatable
         'email', 
         'photo',
         'password',
+        'user_type_id',
     ];
 
     /**
@@ -39,4 +40,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-}
+
+    public function userType()
+    {
+        return $this->hasOne('App\Modules\Users\Models\UserType', 'id', 'user_type_id');
+    }
+}// end -:- User Model
+ 

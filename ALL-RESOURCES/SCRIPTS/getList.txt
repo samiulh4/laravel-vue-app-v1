@@ -1,0 +1,212 @@
+public function getList(Request $request, $status = '', $desk = '')
+    {
+
+//        $process_type_id = session('active_process_list');
+        $process_type_id = $request->get('process_type_id'); //new process type get by javascript
+        $selected_org_id = $request->get('selected_org_id'); //new process type get by javascript
+        $selected_min_id = $request->get('selected_min_id'); //new process type get by javascript
+
+        $moha_ministry_list = MohaMinistry::where('is_active', 1)->pluck('name', 'id')->toArray();
+
+        $status == '-1000' ? '' : $status;
+        $get_user_desk_ids = explode(",", CommonFunction::getDeskId());
+
+        $prefix = '';
+//        if(CommonFunction::getUserType() == '5x505'){
+//            $prefix = 'client';
+//        }
+
+        $user_id = CommonFunction::getUserId();
+        $list = ProcessList::getApplicationList($process_type_id, $status, $request, $desk, $selected_org_id,$selected_min_id);
+
+        /*
+         * If search option has only one result then open the application
+         */
+        if ($request->filled('process_search')) {
+            $list_count = $list->get()->count();
+            if ($list_count == 1) {
+                $single_data = $list->get();
+                return response()->json([
+                    'responseType' => 'single',
+                    'url' => url(''.$prefix.'/process/' . $single_data[0]->form_url . '/view/' . Encryption::encodeId($single_data[0]->ref_id) . '/' . Encryption::encodeId($single_data[0]->process_type_id))
+                ]);
+            }
+        }
+
+        $verifierList = VerifierList::where('status',1)->pluck('code','id');
+
+        $class = $this->batchUpdateClass($request, $desk);
+        return Datatables::of($list)
+            ->addColumn('action', function ($list) use ($status, $request, $prefix, $desk, $class) {
+
+                if ($list->locked_by > 0
+                    && Carbon::createFromFormat('Y-m-d H:i:s', $list->locked_at)->diffInMinutes() < 3 and $list->locked_by != Auth::user()->id
+                ) {
+                    $locked_by_user = UsersModel::where('id', $list->locked_by)
+                        ->select(DB::raw("CONCAT_WS(' ', users.user_first_name, users.user_middle_name, users.user_last_name) as user_name"))
+                        ->value('user_name');
+                    $html = '<img width="20" src="' . url('/assets/images/Lock-icon_2.png') . '"/>' .
+                        '<a onclick="return confirm(' . "'The record locked by $locked_by_user, would you like to force unlock?'" . ')" 
+                            target="_blank" href="' . url('process/' . $list->form_url . '/view/' . Encryption::encodeId($list->ref_id) . '/' . Encryption::encodeId($list->process_type_id)) . '"
+                            class="btn btn-xs btn-primary"> Open</a> &nbsp;';
+                } else {
+                    if (in_array($list->status_id, [-1, 5]) && $list->created_by == Auth::user()->id) {
+                        $html = '<a  href="' . url(''.$prefix.'/process/' . $list->form_url . '/edit/' . Encryption::encodeId($list->ref_id) . '/' . Encryption::encodeId($list->process_type_id)) . '" class="btn btn-xs btn-success button-color ' . $class['button_class']. ' " style="color: white"> <i class="fa fa-folder-open"></i> Edit</a><br>';
+                    } else {
+                        $html = '<a  href="' . url(''.$prefix.'/process/' . $list->form_url . '/view/' . Encryption::encodeId($list->ref_id) . '/' . Encryption::encodeId($list->process_type_id)) . '" class="btn btn-xs btn-primary button-color ' .  $class['button_class'] . ' " style="color: white"> <i class="fa fa-folder-open"></i> Open</a><br>';
+                    }
+
+                    //$html = '<a target="_blank" href="' . url('process/' . $list->form_url . '/view/' . Encryption::encodeId($list->ref_id) . '/' . Encryption::encodeId($list->process_type_id)) . '" class="btn btn-xs btn-primary ' . $class . '"> <i class="fa fa-folder-open"></i> Open</a>  &nbsp;';
+                }
+
+                $html .= '<input type="hidden" class="' . $class['input_class'] . '" name="batch_input"  value=' . Encryption::encodeId($list->id) . '>';
+                return $html;
+            })
+            ->editColumn('serial_no', function ($list) use ($desk, $request, $class) {
+                if($list->status_id !=-1){
+                    $checkBox = 'appCheckBox';
+                    if($request->process_search){
+                        $checkBox = 'appCheckBoxSearch';
+                    }
+                    return '<input type="checkbox" value="'.$list->id.'" name="application[]" class="'.$checkBox.'">';
+                }else{
+                    return '';
+                }
+
+            })
+            ->editColumn('tracking_no', function ($list) use ($desk, $request, $class) {
+                $existingFavoriteItem = CommonFunction::checkFavoriteItem($list->id);
+                $htm = '';
+                if ($existingFavoriteItem > 0) {
+                    $htm .= '<i style="cursor: pointer;color:#f0ad4e" class="fa fa-star remove_favorite_process" title="Added to your favorite list" id=' . Encryption::encodeId($list->id) . '></i> ' . $list->tracking_no;
+                } else {
+                    $htm .= '<i style="cursor: pointer" class="fa fa-star-o favorite_process"  title="Add to your favorite list" id=' . Encryption::encodeId($list->id) . '></i> ' . $list->tracking_no;
+                }
+                return $htm;
+            })
+            ->editColumn('json_object', function ($list) {
+                return getDataFromJson($list->json_object);
+            })
+            ->editColumn('process_status.status_name', function ($list) use ($process_type_id,$verifierList,$get_user_desk_ids) {
+
+                $nsi = '';
+                $sb = '';
+                $user_type = Auth::user()->user_type;
+//                if(in_array($list->process_type_id, ['1','4']) && $user_type == '4x404'){
+//                    if($list->status_id > 1){
+//                        $result = CommonFunction::checkVerificationStatus($list->ref_id, $process_type_id);
+//                        if(!empty($result)){
+//
+//
+//
+//                        if($result->sb_gk_verification_status == 0){
+//                            $sb .= '<span class="label label-warning">SB</span>';
+//                        }elseif($result->sb_gk_verification_status == 2){
+//                            $sb .= '<span class="label label-success">SB</span>';
+//                        }elseif($result->sb_gk_verification_status == 3){
+//                            $sb .= '<span class="label label-danger">SB</span>';
+//                        } elseif($result->sb_gk_verification_status == 4){
+//                            $sb .= '<span class="label label-default" style="background-color: #777777">SB</span>';
+//                        } elseif($result->sb_gk_verification_status == 5){
+//                            $sb .= '<span class="label label-primary">SB</span>';
+//                        }else{
+//                            $sb .= '<span class="label label-info">SB</span>';
+//                        }
+//
+//                        if($result->nsi_gk_verification_status == 0){
+//                            $nsi .= '<span class="label label-warning">NSI</span>';
+//                        }elseif($result->nsi_gk_verification_status == 2){
+//                            $nsi .= '<span class="label label-success">NSI</span>';
+//                        }elseif($result->nsi_gk_verification_status == 3){
+//                            $nsi .= '<span class="label label-danger">NSI</span>';
+//                        } elseif($result->nsi_gk_verification_status == 4){
+//                            $nsi .= '<span class="label label-default" style="background-color: #777">NSI</span>';
+//                        } elseif($result->nsi_gk_verification_status == 5){
+//                            $nsi .= '<span class="label label-primary">NSI</span>';
+//                        }else{
+//                            $nsi .= '<span class="label label-info">NSI</span>';
+//                        }
+//                    }
+//                    }
+//
+//                }
+
+                $statusMapping = [
+                    0 =>"label-warning",
+                    2 =>"label-success",
+                    3 =>"label-danger",
+                    4 =>"label-default",
+                    5 =>"label-primary",
+                    6 =>"label-info",
+                ];
+
+
+
+                if(!in_array($list->status_id, [5,6,2,-1,28,30,33] ) && in_array(Auth::user()->user_type, ['5x506'] )){
+                    $list->status_name = "Under Process";
+                    if($list->status_id == '18'){
+                        $list->status_name = "Verified";
+                    }
+                }
+
+                if(in_array($list->process_type_id, ['5', '1', '4','7','8']) && $user_type == '4x404' && count(array_intersect([7,8,9,21,22,24],$get_user_desk_ids)) == 0){
+                    if($list->status_id > 1){
+                        $verificationConfirmedBy = [];
+                        $verificationType = explode('-',$list->verification_type);
+                        $result = SbNsiVerification::where('ref_id',$list->ref_id)->where('process_type_id',$process_type_id)->get();
+
+//                        if(!$result->isNotEmpty()){
+                        foreach ($result as $verifiedData){
+                            $sb .= '<span class="label '. $statusMapping[$verifiedData->gk_verification_status].'">'.$verifierList[$verifiedData->verified_by].'</span> ';
+                            array_push($verificationConfirmedBy,$verifiedData->verified_by);
+                        }
+
+                        foreach ($verifierList as $key=>$verifier){
+                            if(in_array($key,$verificationConfirmedBy) == false && in_array($verifier,$verificationType) == true){
+                                $sb .= ' <span class="label '. $statusMapping[0].'">'.$verifier.'</span>';
+                            }
+                        }
+//                        }
+                    }
+
+                }
+
+                return $list->status_name .'<br>'.$sb ;
+            })
+            ->editColumn('user_desk.desk_name', function ($list) use($moha_ministry_list) {
+                if($list->process_type_id == '4' && Auth::user()->user_type == '5x506' && !in_array($list->status_id, [-1, 28])){
+                    return $moha_ministry_list[$list->office_id];
+                }else{
+                    return $list->desk_id == 0 ? 'Applicant' : $list->desk_name;
+                }
+            })
+            ->editColumn('updated_at', function ($list) {
+//                return CommonFunction::updatedOn($list->updated_at);
+                return $update_was = Carbon::createFromFormat('Y-m-d H:i:s', $list->updated_at)->format('Y-M-d h:i A');
+            })
+            ->removeColumn('id', 'ref_id', 'process_type_id', 'updated_by', 'closed_by', 'created_by', 'updated_by', 'desk_id', 'status_id', 'locked_by', 'ref_fields')
+            ->rawColumns(['tracking_no', 'action','process_status.status_name','serial_no'])
+            ->setRowAttr([
+                'style' => function ($list) {
+                    $color = '';
+                    if ($list->priority == 1) {
+//                        $color .= 'background:#f000';
+                        $color .= '';
+                    } elseif ($list->priority == 2) {
+                        $color .= '    background: -webkit-linear-gradient(left, rgba(220,251,199,1) 0%, rgba(220,251,199,1) 80%, rgba(255,255,255,1) 100%);';
+                    } elseif ($list->priority == 3) {
+                        $color .= '    background: -webkit-linear-gradient(left, rgba(255,251,199,1) 0%, rgba(255,251,199,1) 40%, rgba(255,251,199,1) 80%, rgba(255,255,255,1) 100%);';
+                    }
+                    return $color;
+                },
+                'class' => function ($list) use ($get_user_desk_ids, $user_id) {
+//                    if($list->read_status == 0){
+                    if (!in_array($list->status_id, [-1, 5, 6, 25]) && $list->read_status == 0 && in_array($list->desk_id, $get_user_desk_ids)) {
+                        return 'unreadMessage';
+                    } elseif (in_array($list->status_id, [5, 6, 25]) && $list->read_status == 0 && $list->created_by == $user_id) {
+                        return 'unreadMessage';
+                    }
+                }
+            ])
+            ->make(true);
+    }

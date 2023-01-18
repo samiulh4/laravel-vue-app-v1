@@ -10,29 +10,48 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Laravel Vue App V1 | Admin')</title>
     <!-- Jquery -->
-    <script src="{{ asset('assets/plugins/jquery/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset('assets/common/plugins/jquery/jquery-3.6.0.min.js') }}"></script>
     @include('partials.admin.styles')
+    <link href="{{ asset('assets/common/styles/admin/style.css') }}" rel="stylesheet">
     @yield('styles')
 </head>
 
 <body id="page-top">
 
-<div id="body-wrapper">
+<section id="body-wrapper">
     @include('partials.admin.nav')
-    <div class="container-fluid mt-3" id="page-wrapper">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3" id="sidebar-wrapper">
-                @include('partials.admin.sidebar')
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 p-0">
+                <section id="adminSidebar">
+                    @include('partials.admin.sidebar')
+                </section>
             </div>
-            <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9" id="content-wrapper">
-                @yield('breadcrumb')
-                @yield('content')
-                @include('partials.admin.footer')
+            <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10">
+                <section id="adminBreadcrumb">
+                    @yield('breadcrumb')
+                </section>
+                <section id="adminMainContent">
+                    @yield('content')
+                </section>
             </div>
-        </div><!-- ./content-wrapper -->
+        </div>
     </div>
-</div><!-- ./page-wrapper -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <section id="adminFooter">
+                    @include('partials.admin.footer')
+                </section>
+            </div>
+        </div>
+    </div>
+</section>
 
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
 
 <!-- View Modal -->
 <div class="modal fade" id="adminViewModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
@@ -54,11 +73,7 @@
 </div>
 
 
-
-
-
-
-@include('partials.scripts')
+@include('partials.admin.scripts')
 @yield('scripts')
 @yield('plugins')
 </body>

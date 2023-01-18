@@ -2,17 +2,29 @@
 @section('styles')
     @include('partials.steps-form')
     <style>
+        .wizard > .content {
+            min-height: 30em;
+        }
+        .wizard > .steps .current a, .wizard > .steps .current a:hover, .wizard > .steps .current a:active {
+            background: #3FB27F;
+        }
+        .wizard > .steps .done a, .wizard > .steps .done a:hover, .wizard > .steps .done a:active {
+            background: #FF9E80;
+            color: #000000;
+        }
         select.form-select.error {
             background: rgb(251, 227, 228);
             /*border: 1px solid red;
             color: black;*/
         }
-        .errorMessage{
+
+        .errorMessage {
             font-size: 14px;
             font-weight: bold;
         }
-        .input-group-text{
-            margin: 0px!important;
+
+        .input-group-text {
+            margin: 0px !important;
         }
     </style>
 @endsection
@@ -59,7 +71,8 @@
                             <input type="text" name="name" id="name" class="form-control"
                                    placeholder="Enter Full Name" value="{{ $editData->name }}"/>
                             @if ($errors->has('name'))
-                                <span class="text-danger fs-6 errorMessage"><strong>{{ $errors->first('name') }}</strong></span>
+                                <span
+                                    class="text-danger fs-6 errorMessage"><strong>{{ $errors->first('name') }}</strong></span>
                             @endif
                         </div>
                     </div>
@@ -273,7 +286,9 @@
                         <th>Result</th>
                         <th>Institution</th>
                         <th>
-                            <butto class="btn btn-sm btn-secondary" onclick="addTableRow('userEducationInfoTb', 'userEducationInfoTr')">+</butto>
+                            <butto class="btn btn-sm btn-secondary"
+                                   onclick="addTableRow('userEducationInfoTb', 'userEducationInfoTr')">+
+                            </butto>
                         </th>
                         </thead>
                         <tbody>
@@ -314,33 +329,31 @@
         var error = $('.errorMessage', formEl);
 
 
-
-
         $(document).ready(function () {
             formEl.validate({
-                errorPlacement: function(error, element) {
+                errorPlacement: function (error, element) {
                     // if(element.attr("name") === "name") {
                     //     error.appendTo(".errorMessage");
                     // }
                     $(element).parent().siblings('.errorMessage').html(error);
                 },
-                rules:{
+                rules: {
                     user_type_id: {
                         required: true,
                     },
-                    name : "required",
+                    name: "required",
                     email: {
                         required: true,
                         email: true
                     }
-                },messages:{
-                    user_type_id : "Please enter user type !",
-                    name : "Please enter name !",
-                    email : "Please enter email !",
-                },invalidHandler: function(form, validator) {
+                }, messages: {
+                    user_type_id: "Please enter user type !",
+                    name: "Please enter name !",
+                    email: "Please enter email !",
+                }, invalidHandler: function (form, validator) {
                     //error.show();
                     //var errors = validator.numberOfInvalids();
-                },submitHandler:function(form){
+                }, submitHandler: function (form) {
                     //alert('Sumit');
                 }
             });
@@ -354,11 +367,11 @@
                     finish: "Submit",
                     loading: "Loading ...",
                 },
-                onStepChanging: function (event, currentIndex, newIndex){
+                onStepChanging: function (event, currentIndex, newIndex) {
                     formEl.validate().settings.ignore = ":disabled,:hidden";
                     return formEl.valid();
                 },
-                onStepChanged: function(event, currentIndex, newIndex) {
+                onStepChanged: function (event, currentIndex, newIndex) {
 
                 },
                 onFinished: function (event, currentIndex) {
@@ -419,7 +432,7 @@
                 });
                 // add the new row
                 $(tr).appendTo($('#user_education_info'));
-                $(tr).find("td button.row-remove").on("click", function() {
+                $(tr).find("td button.row-remove").on("click", function () {
                     $(this).closest("tr").remove();
                 });
             });
@@ -443,7 +456,7 @@
 
                 },
                 success: function (response) {
-                    if(response.status == true)
+                    if (response.status == true)
                         console.log(response);
                 },
                 error: function (response) {
@@ -474,18 +487,21 @@
             var intRegex = /^\d+$/;
             var floatRegex = /^((\d+(\.\d *)?)|((\d*\.)?\d+))$/;
 
-            if(intRegex.test(val) || floatRegex.test(val)) {
+            if (intRegex.test(val) || floatRegex.test(val)) {
                 return true;
-            } else {return false}
+            } else {
+                return false
+            }
 
-            if(intRegex.test(val) || floatRegex.test(val)) {
+            if (intRegex.test(val) || floatRegex.test(val)) {
                 return true;
-            } else {return false}
+            } else {
+                return false
+            }
         }
 
         // Add table Row script
-        function addTableRow2(tableID, template_row_id)
-        {
+        function addTableRow2(tableID, template_row_id) {
             let i;
             // Copy the template row (first row) of table and reset the ID and Styling
             const new_row = document.getElementById(template_row_id).cloneNode(true);
@@ -511,10 +527,9 @@
             $("#" + tableID).append(new_row);
 
         }// end -:- addTableRow()
-        function addTableRow(tableId, rowIdTemplate)
-        {
+        function addTableRow(tableId, rowIdTemplate) {
             let current_total_tr = $('#' + tableId).find('tbody tr').length;
-            if(current_total_tr <= 0){
+            if (current_total_tr <= 0) {
                 alert('No Template Row Found !');
                 return false;
             }

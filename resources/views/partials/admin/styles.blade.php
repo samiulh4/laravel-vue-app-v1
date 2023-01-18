@@ -1,13 +1,13 @@
 <!-- Bootstrap CSS -->
-<link href="{{ asset('assets/plugins/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ asset('assets/common/plugins/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
 <!-- Jquery UI -->
-<link href="{{ asset('assets/plugins/jqueryui/jquery-ui.min.css') }}" rel="stylesheet">
+<link href="{{ asset('assets/common/plugins/jqueryui/jquery-ui.min.css') }}" rel="stylesheet">
 <!-- Fontawesome CSS -->
-<link href="{{ asset('assets/plugins/fontawesome/css/all.min.css') }}" rel="stylesheet">
+<link href="{{ asset('assets/common/plugins/fontawesome/css/all.min.css') }}" rel="stylesheet">
 <!-- Datatable CSS -->
-<link href="{{ asset('assets/plugins/datatables/datatables-1.13.1/css/jquery.dataTables.min.css') }}" rel="stylesheet">
+<link href="{{ asset('assets/common/plugins/datatables/datatables-1.13.1/css/jquery.dataTables.min.css') }}" rel="stylesheet">
 <style>
-    #content-wrapper{
+   /* #content-wrapper{
 
         overflow: hidden;
     }
@@ -19,10 +19,10 @@
     #adminSidebar a,.btn-toggle{
         color: #FFFFFF!important;
         overflow: hidden;
-    }
+    }*/
 
     #adminFooter{
-        background-color: #263238;
+        /*background-color: #263238;*/
         /*position:absolute;
         bottom:0;
         width:100%;
@@ -32,14 +32,14 @@
         /*right: 0;*/
         /*width:100%;*/
 
-        overflow: hidden;
+        /*overflow: hidden;*/
     }
-    #adminFooter h6{
+   /* #adminFooter h6{
         color:#FFFFFF;
         overflow: hidden;
     }
     #adminFooter a{
         color:#FFFFFF;
         overflow: hidden;
-    }
+    }*/
 </style>
