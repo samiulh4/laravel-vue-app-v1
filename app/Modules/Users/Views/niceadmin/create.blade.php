@@ -107,21 +107,21 @@
                                         <i class="fa-solid fa-plus"></i>
                                     </butto>
                                 </th>
-                            </tr>   
+                            </tr>
                         </thead>
                         <tbody>
                             <tr id="usersEducationalInfo_0" data-number="0">
                                 <td>
-                                    <input type="text" class="form-control" name="education_title[]" placeholder="Enter Tile"/>
+                                    <input type="text" class="form-control" name="education_title[]" placeholder="Enter Tile" />
                                 </td>
                                 <td>
-                                    <input type="text" class="form-control" name="education_institution[]" placeholder="Enter Institution/Board"/>
+                                    <input type="text" class="form-control" name="education_institution[]" placeholder="Enter Institution/Board" />
                                 </td>
                                 <td>
-                                    <input type="text" class="form-control" name="education_result[]" placeholder="Enter Result/CGPA/GPA"/>
+                                    <input type="text" class="form-control" name="education_result[]" placeholder="Enter Result/CGPA/GPA" />
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-sm btn-danger"><i class="fa-solid fa-minus"></i></button>
+                                    <button type="button" class="btn btn-sm btn-danger" onclick="removeTableRow(this)"><i class="fa-solid fa-minus"></i></button>
                                 </td>
                             </tr>
                         </tbody>
@@ -166,30 +166,47 @@
             dateFormat: 'yy-mm-dd'
         });
     }); // Document Ready  
-    function addTableRow(tableID)
-    {
+    function addTableRow(tableID) {
         let thisTable = document.getElementById(tableID);
         let currentTotalRow = $('#' + tableID).find('tbody tr').length;
-        if(currentTotalRow <= 0){
+        if (parseInt(currentTotalRow) <= 0) {
             alert('This table tbody need at least one tr/row !');
+            return false;
         }
         let firstTr = $('#' + tableID).find('tbody tr').first();
-        //console.log('firstTr', firstTr);
         let lastTr = $('#' + tableID).find('tbody tr').last();
-        let rowCount = parseInt(lastTr.attr('data-number')) + 1;
+        let dataNumber = $(lastTr).last().attr('data-number');
+        if (dataNumber != '' && typeof dataNumber !== "undefined") {
+            dataNumber = parseInt(dataNumber) + 1;
+        } else {
+            dataNumber = Math.floor(Math.random() * 101);
+        }
+        let rowCount = parseInt(dataNumber);
+
 
         let templateRow = firstTr.attr('id');
-        console.log('templateRow', templateRow);
         let newRow = document.getElementById(templateRow).cloneNode(true);
-        console.log('newRow',newRow);
-       
-        newRow.id = "";
+        //newRow.id = "";
         //newRow.style.display = "";
         let newRowId = tableID + '_' + rowCount;
         newRow.id = newRowId;
         $("#" + tableID).append(newRow);
-        
+        $("#" + newRowId).attr("data-number", rowCount);
 
-    }// end -:- addTableRow()
+        //Get input elements
+        let attrInputs = $("#" + tableID).find('#' + newRowId).find('input');
+        for (let i = 0; i < attrInputs.length; i++) {
+            let nameAtt = attrInputs[i].name;
+            let repText = nameAtt.replace('[0]', '[' + rowCount + ']');
+            attrInputs[i].name = repText;
+        }
+        // Reset input elements
+        attrInputs.val(''); 
+
+
+    } // end -:- addTableRow()
+    function removeTableRow(thisRow) {
+        $(thisRow).closest('tr').remove();
+    } // end -:- removeTableRow()
 </script>
 @endsection
