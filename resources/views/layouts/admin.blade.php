@@ -22,27 +22,23 @@
     @include('partials.admin.nav')
     <div class="container-fluid">
         <div class="row">
-            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 p-0">
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 p-0 m-0">
                 <section id="adminSidebar">
                     @include('partials.admin.sidebar')
                 </section>
             </div>
-            <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10">
-                <section id="adminBreadcrumb">
-                    @yield('breadcrumb')
-                </section>
-                <section id="adminMainContent">
-                    @yield('content')
-                </section>
-            </div>
-        </div>
-    </div>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                <section id="adminFooter">
-                    @include('partials.admin.footer')
-                </section>
+            <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 p-0 m-0">
+               <section id="adminFullPage">
+                    <section id="adminBreadcrumb">
+                        @yield('breadcrumb')
+                    </section>
+                    <section id="adminMainContent">
+                        @yield('content')
+                    </section>
+                    <section id="adminFooter">
+                        @include('partials.admin.footer')
+                    </section>
+               </section>
             </div>
         </div>
     </div>
