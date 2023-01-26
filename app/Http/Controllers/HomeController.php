@@ -26,12 +26,13 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if(Auth::user()->access_portal == 1){
+        /*if(Auth::user()->access_portal == 1){
             return redirect('/web/dashboard');
         }else if(Auth::user()->access_portal == 2){
-            return redirect('/admin/dashboard');
+            return redirect('/admin/v2/dashboard');
         }else{
             return view('home');
-        }
+        }*/
+        return redirect('/admin/v2/dashboard');
     }
 }

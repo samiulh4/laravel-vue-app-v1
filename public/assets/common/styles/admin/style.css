@@ -1,0 +1,63 @@
+#adminNavbar .bg-dark{
+    background-color: #3FB27F!important;
+}
+#adminSidebar{
+    background-color: #F35045;
+    height: 100vh;
+    z-index: 1038;
+}
+#adminFullPage{
+   position : relative;
+   height: 100vh; 
+   margin: 0 25px 0 25px;
+   overflow: hidden; 
+}
+#adminMainContent{
+    /* position: static; */
+   /*display: flex;
+    flex-direction: column; */
+    width: 100%;
+    max-height: 1000px !important;
+    overflow: scroll; 
+}
+
+#adminFooter{
+    position: fixed;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    z-index: 999999;
+    width: 100%;
+    display: block;
+    margin-left: 226px;
+    background-color: #3FB27F!important;
+    color: #FFFFFF;
+    min-height: 3rem;
+}
+#adminFooter a,p{
+    color: #FFFFFF;
+}
+.scroll-to-top {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    display: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    text-align: center;
+    color: rebeccapurple;
+    background: rgba(90, 92, 105, 0.5);
+    line-height: 46px;
+}
+
+.scroll-to-top:focus, .scroll-to-top:hover {
+    color: rebeccapurple;
+}
+
+.scroll-to-top:hover {
+    background: #5a5c69;
+}
+
+.scroll-to-top i {
+    font-weight: 800;
+}

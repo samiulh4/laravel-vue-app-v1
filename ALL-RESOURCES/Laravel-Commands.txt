@@ -2,3 +2,14 @@ php artisan migrate:refresh --seed
 
 # Run Laravel Project with Different Port and Host Command:
 php artisan serve --host=localhost --port=9000
+
+
+php artisan make:seeder PostsTableSeeder
+
+Note – Sometime if you running into issue while executing seeder you may need to regenerate composers autoloader using following command:
+
+composer dump-autoload
+
+php artisan db:seed
+
+php artisan make:migration create_flights_table

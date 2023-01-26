@@ -17,3 +17,9 @@ Route::group(['module' => 'Users', 'prefix' => '/admin/user', 'middleware' => ['
     Route::post('/store', 'AdminUserController@store')->name('admin.user.store');
     Route::post('/update', 'AdminUserController@update')->name('admin.user.update');
 });
+
+// User Admin V2 Route
+Route::group(['module' => 'Users', 'prefix' => '/admin/v2/user', 'middleware' => ['web', 'auth'], 'namespace' => 'App\Modules\Users\Controllers'], function() {
+    Route::get('/index', 'NiceAdminUserController@index')->name('admin.v2.user.index');
+    Route::get('/create', 'NiceAdminUserController@create')->name('admin.v2.user.create');
+});

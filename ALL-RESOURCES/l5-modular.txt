@@ -16,3 +16,8 @@ php artisan make:module Dashboards --no-migration
 php artisan make:module:controller
 php artisan make:module:controller MemberController --module=HelloWorld --model=Member
 php artisan make:module:controller AdminUserController --module=HelloWorld
+
+
+# Make Model 
+php artisan make:module:model UserType --module=Users
+php artisan make:Users:model UserType

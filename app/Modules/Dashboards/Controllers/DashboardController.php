@@ -21,6 +21,12 @@ class DashboardController extends Controller
         return view("Dashboards::admin-dashboard");
     }
 
+    public function niceAdminDashboard()
+    {
+        return view("Dashboards::niceadmin-dashboard");
+    }
+    
+
     public function index()
     {
         return view("Dashboards::index");

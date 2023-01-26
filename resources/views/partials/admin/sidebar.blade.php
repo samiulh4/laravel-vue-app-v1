@@ -1,4 +1,4 @@
-<section id="adminSidebar">
+
     <a href="{{ url('admin/dashboard') }}"
        class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
         <img src="{{ asset(Auth::user()->photo) }}" class="img-fluid img-thumbnail" style="width: 75px;height: 75px"/>
@@ -22,7 +22,7 @@
             </div>
         </li>
     </ul>
-</section>
+
 
 
 

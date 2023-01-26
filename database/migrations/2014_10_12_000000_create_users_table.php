@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('username', 100)->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->integer('user_type_id')->unsigned()->default(1);
+            $table->integer('user_type_id')->unsigned()->default(4);
             $table->tinyInteger('is_active')->default(0);
             $table->tinyInteger('access_portal')->default(1)->comment('1=Web, 2=Web & Admin');
             $table->string('phone_no', 20)->nullable();
@@ -29,6 +29,7 @@ class CreateUsersTable extends Migration
             $table->string('passport_no', 20)->nullable();
             $table->string('photo', 255)->nullable();
             $table->date('date_of_birth')->nullable();
+            $table->integer('country_id')->unsigned()->nullable();
 
             $table->integer('provider_type_id')->unsigned()->nullable()->default(0);
             $table->string('provider_id', 255)->nullable();
