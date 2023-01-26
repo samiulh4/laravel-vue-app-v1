@@ -1938,7 +1938,7 @@ var staticRenderFns = [function () {
   return _c("div", {
     staticClass: "container"
   }, [_c("div", {
-    staticClass: "row justify-content-center"
+    staticClass: "row"
   }, [_c("div", {
     staticClass: "col-md-8"
   }, [_c("div", {
@@ -49729,8 +49729,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\wamp64\www\laravel\laravel-vue-app-v1\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\wamp64\www\laravel\laravel-vue-app-v1\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! E:\xampp73\htdocs\laravel\laravel-vue-app-v1\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! E:\xampp73\htdocs\laravel\laravel-vue-app-v1\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
