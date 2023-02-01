@@ -1,21 +1,17 @@
 <template>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Example Component</div>
-
-                    <div class="card-body">
-                        I'm an example component.
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div>
+        <Nav/>
+        <Footer/>
     </div>
 </template>
 
 <script>
+import Nav from './partials/Nav.vue';
+import Footer from './partials/Footer.vue';
     export default {
+        components:{
+            Nav,Footer
+        },
         mounted() {
             console.log('Component mounted.')
         }

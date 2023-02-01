@@ -16,6 +16,7 @@
 <body>
     <div id="root">
         <root></root>
+        <router-view></router-view><!-- where to place route componennt-->
     </div>
     <!-- Scripts -->
     <script src="{{ mix('js/app.js') }}"></script>
