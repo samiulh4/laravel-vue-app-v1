@@ -5,12 +5,13 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/png" href="{{ asset('assets/img/favicon.png') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('assets/common/img/icons/vue.png') }}" />
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Laravel Vue App V1 | Vue</title>
+    <title>Laravel & Vue App | Vue</title>
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/common/styles/vue/style.css') }}" rel="stylesheet">
 </head>
 
 <body>

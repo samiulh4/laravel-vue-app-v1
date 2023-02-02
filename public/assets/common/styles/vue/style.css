@@ -1,0 +1,8 @@
+.top_navbar_wrapper nav{
+    background-color: #41B883 !important;
+    color: #283747 !important;
+}
+.top_navbar_wrapper  .btn-outline-success{
+    background-color: #318A62;
+    color: #35495E;
+}
