@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
+        'guard' => 'api', # if not use api access token not generate.
         'passwords' => 'users',
     ],
 

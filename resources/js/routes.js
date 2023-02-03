@@ -1,13 +1,20 @@
 import VueRouter from 'vue-router';
-import Signin from './components/signin/Signin.vue';
+
+import SignInForm from './components/sign-in/SignInForm.vue';
+
+import HomePage from './components/home/HomePage';
+
 import About from './components/about/About.vue';
 import BlogCreate from './components/blogs/BlogCreate.vue';
 
 let routes = [
-    {path: '/signin', component: Signin, name: 'Signin'},
-    
     {path: '/about', component: About, name: 'About'},
-    {path: '/blog/create', component: BlogCreate, name: 'BlogCreate'},    
+
+    {path: '/sign-in', component: SignInForm, name: 'SignInForm'},
+
+    {path: '/home', component: HomePage, name: 'HomePage'},
+
+    {path: '/blog/create', component: BlogCreate, name: 'BlogCreate'},
 ];
 
 export default new VueRouter({
