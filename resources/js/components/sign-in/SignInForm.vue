@@ -40,14 +40,11 @@
         },
         methods: {
             login() {
-                localStorage.setItem('access_token', '');
                 this.$store.dispatch('currentUser/loginUser', this.user);
-                this.$swal('Hello Vue world!!!');
-                this.$router.push({path: '/home'});
+                //this.$swal('Hello Vue world!!!');
             }
         },
         mounted() {
-            //console.log('Sign-In Page Mounted.');
         }
     }
 </script>

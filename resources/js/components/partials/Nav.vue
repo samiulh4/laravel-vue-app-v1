@@ -3,7 +3,7 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" href="#">Navbar</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -22,14 +22,15 @@
                     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                 </form>
+
                 <ul class="navbar-nav ml-auto user_dropdown_menus">
-                    <li class="nav-item">
+                    <li class="nav-item" v-if="authLoggedIn == false">
                         <router-link :to="{ name: 'SignInForm' }" class="nav-link">Login</router-link>
                     </li>
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown" v-if="authLoggedIn">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
-                            aria-expanded="false">
-                            {{ currentUser.name }}
+                           aria-expanded="false">
+                            {{ authUser.email }}
                         </a>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="#">Action</a>
@@ -46,48 +47,45 @@
 </template>
 
 <script>
-import axios from "axios";
 
-export default {
-    computed:{
-        currentUser:{
-            get(){
-                console.log(this.$store.state.currentUser.user);
-                return this.$store.state.currentUser.user;
+    import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
+    export default {
+        data: function(){
+            return{
+                //token: null,
+                //isLoggedIn: false,
             }
+        },
+        computed: {
+            //...mapGetters(['currentUser/getToken']),
+            /*...mapGetters({
+                token: 'currentUser/getToken'
+            }),*/
+            /*currentUser: {
+                get() {
+                    return this.$store.state.currentUser;
+                }
+            },*/
+            ...mapState('currentUser', {
+                authUser: state => state.user
+            }),
+            ...mapState('currentUser', {
+                authToken: state => state.token
+            }),
+            ...mapState('currentUser', {
+                authLoggedIn: state => state.isLoggedIn
+            }),
+        },
+        created() {
+            //this.$store.dispatch('currentUser/getUser');
+        },
+        methods: {
+            signOut() {
+                this.$store.dispatch('currentUser/logoutUser');
+            }
+        },
+        mounted() {
+
         }
-    },
-    methods:{
-      signOut(){
-          let myHeaders = new Headers();
-          myHeaders.append("Content-Type", "application/json");
-          myHeaders.append("Accept", "application/json");
-          myHeaders.append("Authorization", axios.defaults.headers.common["Authorization"]);
-          let requestOptions = {
-              method: 'GET',
-              headers: myHeaders,
-              redirect: 'follow'
-          };
-          axios.get('/api/sign-out', requestOptions)
-              .then(response =>{
-                  if(response.data.success == true){
-                      localStorage.setItem('access_token', '');
-                      this.$router.push({path: '/sign-in'});
-                  }else{
-                      alert(response.data.message);
-                  }
-              }).catch(error => {
-                  console.log(error)
-              })
-      }
-    },
-    created() {
-        axios.defaults.headers.common["Authorization"] = "Bearer "+ localStorage.getItem('access_token');
-        this.$store.dispatch('currentUser/getUser');
-    },
-    mounted() {
-        //console.log('Navbar Component Mounted.');
-        console.log(this.$store.state.currentUser.user);
     }
-}
 </script>
