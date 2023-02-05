@@ -1918,22 +1918,16 @@ __webpack_require__.r(__webpack_exports__);
     Footer: _partials_Footer_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   computed: {
-    currentUser: {
-      get: function get() {
-        console.log(this.$store.state.currentUser.user);
-        return this.$store.state.currentUser.user;
-      }
-    }
+    /*currentUser:{
+        get(){
+            return this.$store.state.currentUser.user;
+        }
+    }*/
   },
   created: function created() {
-    axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem('access_token');
-    this.$store.dispatch('currentUser/getUser');
+    //this.$store.dispatch('currentUser/getUser');
   },
-  mounted: function mounted() {
-    //console.log('Root Component Mounted.')
-    // console.log('Root =>',axios.defaults.headers.common["Authorization"]);
-    //console.log(this.$store.state.currentUser.user);
-  }
+  mounted: function mounted() {}
 });
 
 /***/ }),
@@ -2010,9 +2004,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {},
-  mounted: function mounted() {
-    //console.log('Home Page Mounted.');
-  }
+  mounted: function mounted() {}
 });
 
 /***/ }),
@@ -2043,52 +2035,43 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  computed: {
-    currentUser: {
-      get: function get() {
-        console.log(this.$store.state.currentUser.user);
-        return this.$store.state.currentUser.user;
-      }
+  data: function data() {
+    return {
+      //token: null,
+      //isLoggedIn: false,
+    };
+  },
+  computed: _objectSpread(_objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('currentUser', {
+    authUser: function authUser(state) {
+      return state.user;
     }
+  })), Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('currentUser', {
+    authToken: function authToken(state) {
+      return state.token;
+    }
+  })), Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('currentUser', {
+    authLoggedIn: function authLoggedIn(state) {
+      return state.isLoggedIn;
+    }
+  })),
+  created: function created() {
+    //this.$store.dispatch('currentUser/getUser');
   },
   methods: {
     signOut: function signOut() {
-      var _this = this;
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("Accept", "application/json");
-      myHeaders.append("Authorization", axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.headers.common["Authorization"]);
-      var requestOptions = {
-        method: 'GET',
-        headers: myHeaders,
-        redirect: 'follow'
-      };
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/sign-out', requestOptions).then(function (response) {
-        if (response.data.success == true) {
-          localStorage.setItem('access_token', '');
-          _this.$router.push({
-            path: '/sign-in'
-          });
-        } else {
-          alert(response.data.message);
-        }
-      })["catch"](function (error) {
-        console.log(error);
-      });
+      this.$store.dispatch('currentUser/logoutUser');
     }
   },
-  created: function created() {
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem('access_token');
-    this.$store.dispatch('currentUser/getUser');
-  },
-  mounted: function mounted() {
-    //console.log('Navbar Component Mounted.');
-    console.log(this.$store.state.currentUser.user);
-  }
+  mounted: function mounted() {}
 });
 
 /***/ }),
@@ -2113,17 +2096,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     login: function login() {
-      localStorage.setItem('access_token', '');
       this.$store.dispatch('currentUser/loginUser', this.user);
-      this.$swal('Hello Vue world!!!');
-      this.$router.push({
-        path: '/home'
-      });
+      //this.$swal('Hello Vue world!!!');
     }
   },
-  mounted: function mounted() {
-    //console.log('Sign-In Page Mounted.');
-  }
+  mounted: function mounted() {}
 });
 
 /***/ }),
@@ -2433,7 +2410,7 @@ var render = function render() {
     }
   }, [_vm._v("Blog")])], 1)]), _vm._v(" "), _vm._m(1), _vm._v(" "), _c("ul", {
     staticClass: "navbar-nav ml-auto user_dropdown_menus"
-  }, [_c("li", {
+  }, [_vm.authLoggedIn == false ? _c("li", {
     staticClass: "nav-item"
   }, [_c("router-link", {
     staticClass: "nav-link",
@@ -2442,7 +2419,7 @@ var render = function render() {
         name: "SignInForm"
       }
     }
-  }, [_vm._v("Login")])], 1), _vm._v(" "), _c("li", {
+  }, [_vm._v("Login")])], 1) : _vm._e(), _vm._v(" "), _vm.authLoggedIn ? _c("li", {
     staticClass: "nav-item dropdown"
   }, [_c("a", {
     staticClass: "nav-link dropdown-toggle",
@@ -2452,7 +2429,7 @@ var render = function render() {
       "data-toggle": "dropdown",
       "aria-expanded": "false"
     }
-  }, [_vm._v("\n                        " + _vm._s(_vm.currentUser.name) + "\n                    ")]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n                        " + _vm._s(_vm.authUser.email) + "\n                    ")]), _vm._v(" "), _c("div", {
     staticClass: "dropdown-menu"
   }, [_c("a", {
     staticClass: "dropdown-item",
@@ -2476,7 +2453,7 @@ var render = function render() {
         return _vm.signOut();
       }
     }
-  }, [_vm._v("Sign out")])])])])])])]);
+  }, [_vm._v("Sign out")])])]) : _vm._e()])])])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
@@ -54873,6 +54850,34 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
 
 /***/ }),
 
+/***/ "./resources/js/axiosConfig.js":
+/*!*************************************!*\
+  !*** ./resources/js/axiosConfig.js ***!
+  \*************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+var axiosConfig = axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({
+  baseURL: 'http://localhost:8000'
+});
+axiosConfig.interceptors.request.use(function (config) {
+  var token = localStorage.getItem('auth_token');
+  if (token) {
+    config.headers.Authorization = "Bearer ".concat(token);
+  }
+  return config;
+}, function (error) {
+  return Promise.reject(error);
+});
+/* harmony default export */ __webpack_exports__["default"] = (axiosConfig);
+
+/***/ }),
+
 /***/ "./resources/js/bootstrap.js":
 /*!***********************************!*\
   !*** ./resources/js/bootstrap.js ***!
@@ -55503,48 +55508,109 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
-function _objectDestructuringEmpty(obj) { if (obj == null) throw new TypeError("Cannot destructure " + obj); }
+/* harmony import */ var _axiosConfig__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../axiosConfig */ "./resources/js/axiosConfig.js");
+/* harmony import */ var _routes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../routes */ "./resources/js/routes.js");
+
+
 
 var state = {
-  user: {}
+  user: JSON.parse(localStorage.getItem('auth_user')) || {},
+  isLoggedIn: JSON.parse(localStorage.getItem('auth_login_status')) || false,
+  token: localStorage.getItem('auth_token') || null
 };
-var getters = {};
+var getters = {
+  getToken: function getToken(state) {
+    return state.token;
+  },
+  getLoggedInStatus: function getLoggedInStatus(state) {
+    return state.isLoggedIn;
+  }
+};
 var actions = {
-  loginUser: function loginUser(_ref, user) {
-    _objectDestructuringEmpty(_ref);
+  navigateTo: function navigateTo(_ref, route) {
+    var commit = _ref.commit;
+    _routes__WEBPACK_IMPORTED_MODULE_2__["default"].push(route);
+  },
+  loginUser: function loginUser(_ref2, user) {
+    var commit = _ref2.commit,
+      dispatch = _ref2.dispatch;
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/sign-in', {
       email: user.email,
       password: user.password
     }).then(function (response) {
       if (response.data.success == true) {
-        localStorage.setItem('access_token', response.data.access_token);
+        commit('setUser', response.data.user);
+        commit('setToken', response.data.access_token);
+        commit('setLoginStatus');
+        dispatch('navigateTo', {
+          path: '/home'
+        });
       }
-      // console.log(response.data);
     })["catch"](function (error) {
       console.log('loginUser Error =>', error);
     });
   },
-  getUser: function getUser(_ref2) {
-    var commit = _ref2.commit;
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Accept", "application/json");
-    myHeaders.append("Authorization", axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.headers.common["Authorization"]);
-    var requestOptions = {
-      method: 'GET',
-      headers: myHeaders,
-      redirect: 'follow'
-    };
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('api/about-me', requestOptions).then(function (response) {
-      commit('setUser', response.data);
+  logoutUser: function logoutUser(_ref3) {
+    var commit = _ref3.commit,
+      dispatch = _ref3.dispatch;
+    _axiosConfig__WEBPACK_IMPORTED_MODULE_1__["default"].get('/api/sign-out').then(function (response) {
+      console.log('logoutUser [response] =>', response.data);
+      commit('logout');
+      alert(response.data.message);
+      dispatch('navigateTo', {
+        path: '/sign-in'
+      });
+    })["catch"](function (error) {
+      console.log('logoutUser [error] =>', error);
+    });
+  },
+  getUser: function getUser(_ref4) {
+    var commit = _ref4.commit;
+    _axiosConfig__WEBPACK_IMPORTED_MODULE_1__["default"].get('api/about-me').then(function (response) {
+      if (response.data.success == true) {
+        commit('setUser', response.data.user);
+      } else {
+        console.log('getUser =>', response.data.message);
+        commit('unSetToken');
+      }
     })["catch"](function (error) {
       console.log('getUser Error =>', error);
+      commit('unSetToken');
     });
   }
 };
 var mutations = {
-  setUser: function setUser(state, data) {
-    state.user = data;
+  setUser: function setUser(state, user) {
+    state.user = user;
+    localStorage.setItem('auth_user', JSON.stringify(user));
+  },
+  unSetUser: function unSetUser(state) {
+    state.user = {};
+    localStorage.removeItem('auth_user');
+  },
+  setLoginStatus: function setLoginStatus(state) {
+    state.isLoggedIn = true;
+    localStorage.setItem('auth_login_status', true.toString());
+  },
+  unSetLoginStatus: function unSetLoginStatus(state) {
+    state.isLoggedIn = false;
+    localStorage.removeItem('auth_login_status');
+  },
+  setToken: function setToken(state, token) {
+    state.token = token;
+    localStorage.setItem('auth_token', token);
+  },
+  unSetToken: function unSetToken(state) {
+    state.token = null;
+    localStorage.removeItem('auth_token');
+  },
+  logout: function logout(state) {
+    state.user = {};
+    state.token = null;
+    state.isLoggedIn = false;
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('auth_user');
+    localStorage.removeItem('auth_login_status');
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = ({

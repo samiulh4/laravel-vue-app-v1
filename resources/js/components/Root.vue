@@ -13,21 +13,17 @@ import Footer from './partials/Footer.vue';
             Nav,Footer
         },
         computed:{
-            currentUser:{
+            /*currentUser:{
                 get(){
-                    console.log(this.$store.state.currentUser.user);
                     return this.$store.state.currentUser.user;
                 }
-            }
+            }*/
         },
         created() {
-            axios.defaults.headers.common["Authorization"] = "Bearer "+ localStorage.getItem('access_token');
-            this.$store.dispatch('currentUser/getUser');
+           //this.$store.dispatch('currentUser/getUser');
         },
         mounted() {
-            //console.log('Root Component Mounted.')
-           // console.log('Root =>',axios.defaults.headers.common["Authorization"]);
-            //console.log(this.$store.state.currentUser.user);
+
         }
     }
 </script>

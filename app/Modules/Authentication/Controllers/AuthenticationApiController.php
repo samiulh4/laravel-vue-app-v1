@@ -4,6 +4,8 @@ namespace App\Modules\Authentication\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
 
 class AuthenticationApiController extends Controller
@@ -21,16 +23,33 @@ class AuthenticationApiController extends Controller
                 "message" => "Invalid credentials !"
             ]);
         }
-        return $this->respondWithToken($token);
-    }// end -:- apiSignIn()
-    public function apiSignOut()
-    {
-        auth()->logout();
         return response()->json([
             "success" => true,
             "status" => 200,
-            "message" => "User logged out successfully."
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60,
+            "user" => auth()->user(),
+            "message" => "Token generate successfully.",
         ]);
+        //return $this->respondWithToken($token);
+    }// end -:- apiSignIn()
+    public function apiSignOut()
+    {
+        try{
+            auth()->logout();
+            return response()->json([
+                "success" => true,
+                "status" => 200,
+                "message" => "User logged out successfully."
+            ]);
+        }catch (\Exception $e){
+            return response()->json([
+                "success" => false,
+                "status" => 401,
+                "message" => $e->getMessage()
+            ]);
+        }
     }// end -:- apiSignOut()
     public function apiTokenRefresh()
     {
@@ -38,7 +57,21 @@ class AuthenticationApiController extends Controller
     }// end -:- apiTokenRefresh()
     public function apiMe()
     {
-        return response()->json(auth()->user());
+        try{
+            return response()->json([
+                "success" => true,
+                "status" => 200,
+                "user" => auth()->user(),
+                "message" => 'Authorization token found.'
+            ]);
+        }catch (\Exception $e){
+            return response()->json([
+                "success" => false,
+                "status" => 401,
+                "message" => $e->getMessage()
+            ]);
+        }
+
     }// end -:- apiMe()
     protected function respondWithToken($token)
     {

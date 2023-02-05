@@ -9,7 +9,7 @@
 
         },
         mounted() {
-            //console.log('Home Page Mounted.');
+
         }
     }
 </script>
