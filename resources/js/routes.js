@@ -5,7 +5,9 @@ import SignInForm from './components/sign-in/SignInForm.vue';
 import HomePage from './components/home/HomePage';
 
 import About from './components/about/About.vue';
+// Blog Components
 import BlogCreate from './components/blogs/BlogCreate.vue';
+import BlogIndex from './components/blogs/BlogIndex.vue';
 
 let routes = [
     {path: '/about', component: About, name: 'About'},
@@ -14,7 +16,9 @@ let routes = [
 
     {path: '/home', component: HomePage, name: 'HomePage'},
 
+    // Blog Routes
     {path: '/blog/create', component: BlogCreate, name: 'BlogCreate'},
+    {path: '/blog/index', component: BlogIndex, name: 'BlogIndex'},
 ];
 
 export default new VueRouter({

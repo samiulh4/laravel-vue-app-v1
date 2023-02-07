@@ -1,5 +1,5 @@
 <template>
-    <div class="container-fluid">
+    <div class="container-fluid content_wrapper">
         <div class="row">
             <div class="col-md-8 offset-md-4 mx-auto">
                 <div class="card">

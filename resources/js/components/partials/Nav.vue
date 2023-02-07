@@ -15,7 +15,7 @@
                         <router-link :to="{ name: 'About' }" class="nav-link">About</router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link :to="{ name: 'BlogCreate' }" class="nav-link">Blog</router-link>
+                        <router-link :to="{ name: 'BlogIndex' }" class="nav-link">Blog</router-link>
                     </li>
                 </ul>
                 <form class="form-inline navbar_search_form">
@@ -24,9 +24,7 @@
                 </form>
 
                 <ul class="navbar-nav ml-auto user_dropdown_menus">
-                    <li class="nav-item" v-if="authLoggedIn == false">
-                        <router-link :to="{ name: 'SignInForm' }" class="nav-link">Login</router-link>
-                    </li>
+                    <SignInMenu/>
                     <li class="nav-item dropdown" v-if="authLoggedIn">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
                            aria-expanded="false">
@@ -47,9 +45,12 @@
 </template>
 
 <script>
-
+    import SignInMenu from './SignInMenu.vue';
     import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
     export default {
+        components: {
+            SignInMenu
+        },
         data: function(){
             return{
                 //token: null,

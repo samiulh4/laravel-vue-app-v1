@@ -25,6 +25,8 @@ const actions ={
                 commit('setToken', response.data.access_token);
                 commit('setLoginStatus');
                 dispatch('navigateTo', { path: '/home' });
+            }else {
+                alert(response.data.message);
             }
         }).catch(error =>{
             console.log('loginUser Error =>',error);

@@ -1,0 +1,182 @@
+<?php
+
+namespace App\Modules\SMSPortal\Controllers;
+
+use App\Http\Requests;
+use App\Http\Controllers\Controller;
+use App\Libraries\ACL;
+use App\Libraries\CommonFunction;
+use App\Libraries\Encryption;
+
+use App\Libraries\NotificationWebService;
+use App\Modules\CompanyProfile\Models\CompanyType;
+use App\Modules\Requisition\Models\RequisitionVoucher;
+use App\Modules\Payment\Models\BankBranch;
+use App\Modules\Payment\Models\Config;
+use App\Modules\Pilgrim\Models\Pilgrim;
+use App\Modules\Settings\Models\AutoSuggestWord;
+
+use App\Modules\Settings\Models\HomePageSlider;
+use App\Modules\SMSPortal\Models\SmsCampaignGroup;
+use App\Modules\SMSPortal\Models\SmsCampaignInfo;
+use App\Modules\SMSPortal\Models\SmsCampaignLog;
+use App\Modules\SMSPortal\Models\SmsCellPhoneNumber;
+
+use App\Modules\Users\Models\CompanyInfo;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Session;
+use JeroenDesloovere\VCard\VCardParser;
+//use Maatwebsite\Excel\Excel;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Modules\SMSPortal\Models\SmsApiInfo;
+
+
+
+
+class SMSCredentialController extends Controller
+{
+    public function __construct()
+    {
+
+    }
+    public function getSmsCredentialList(Request $request)
+    {
+        $search_input = $request->get('search');
+        $limit = $request->get('limit');
+
+        $smsData = SmsApiInfo::leftJoin('company_info', 'company_info.id', '=', 'sms_api_info.company_id')
+            ->select('sms_api_info.*', 'company_info.org_nm as company_name');
+        if ($search_input) {
+            $smsData->where(function ($smsData) use ($search_input) {
+                $smsData->where('company_info.org_nm', 'like', '%' . $search_input . '%');
+            });
+        }
+        $data = $smsData->paginate($limit);
+
+        $data->getCollection()->transform(function ($sms, $key) {
+            return [
+                'si' => $key + 1,
+                'id' => Encryption::encodeId($sms->id),
+                'COMPANY' => $sms->company_name,
+                'SMS_API_URL_FOR_TOKEN' => $sms->SMS_API_URL_FOR_TOKEN,
+                'SMS_CLIENT_ID' => $sms->SMS_CLIENT_ID,
+                'SMS_CLIENT_SECRET' => $sms->SMS_CLIENT_SECRET,
+                'SMS_GRANT_TYPE' => $sms->SMS_GRANT_TYPE,
+                'SMS_API_URL_FOR_SEND' => $sms->SMS_API_URL_FOR_SEND,
+                'SMS_API_URL_FOR_SEND_bulk' => $sms->SMS_API_URL_FOR_SEND_bulk,
+                'SMS_API_URL_FOR_TOKEN_BALANCE' => $sms->SMS_API_URL_FOR_TOKEN_BALANCE,
+                'SMS_CLIENT_SECRET_BALANCE' => $sms->SMS_CLIENT_SECRET_BALANCE,
+                'SMS_CLIENT_ID_BALANCE' => $sms->SMS_CLIENT_ID_BALANCE,
+                'SMS_API_URL_FOR_BALANCE' => $sms->SMS_API_URL_FOR_BALANCE,
+                'STATUS' => $sms->status,
+            ];
+        });
+        return response()->json($data);
+    }// end -:- getSmsCredentialList()
+    public function getCompanyList(Request $request)
+    {
+        $companyInfo = CompanyInfo::orderby('org_nm')->get();
+        return response()->json($companyInfo);
+    }
+    public function smsCredentialStore(Request $request)
+    {
+        if (!ACL::getAccsessRight('settings', 'A')) {
+            abort('400', 'You have no access right! Please contact system administration for more information.');
+        }
+        $this->validate($request, [
+            'company_id' => 'required',
+            'sms_api_url_for_token' => 'required',
+            'sms_client_id' => 'required',
+            'sms_client_secret' => 'required',
+        ]);
+
+        try {
+            $smsData = new SmsApiInfo();
+            $smsData->company_id = $request->get('company_id');
+            $smsData->SMS_API_URL_FOR_TOKEN = $request->get('sms_api_url_for_token');
+            $smsData->SMS_CLIENT_ID = $request->get('sms_client_id');
+            $smsData->SMS_CLIENT_SECRET = $request->get('sms_client_secret');
+            $smsData->SMS_GRANT_TYPE = $request->get('sms_grant_type');
+            $smsData->SMS_API_URL_FOR_SEND = $request->get('sms_api_url_for_send');
+            $smsData->SMS_API_URL_FOR_SEND_bulk = $request->get('sms_api_url_for_send_bulk');
+            $smsData->SMS_API_URL_FOR_TOKEN_BALANCE = $request->get('sms_api_url_for_token_balance');
+            $smsData->SMS_CLIENT_SECRET_BALANCE = $request->get('sms_client_secret_balance');
+            $smsData->SMS_CLIENT_ID_BALANCE = $request->get('sms_client_id_balance');
+            $smsData->SMS_API_URL_FOR_BALANCE = $request->get('sms_api_url_for_balance');
+            $smsData->save();
+            return response()->json(['status' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false,'message' => $e->getMessage()]);
+        }
+
+    }// end -:- smsCredentialStore()
+    public function getDataById($encrypted_id)
+    {
+        try {
+            $id = Encryption::decodeId($encrypted_id);
+            $data = SmsApiInfo::where('id', $id)->first();
+            return $data;
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()]);
+        }
+    }// end -:- getDataById()
+    public function smsCredentialUpdate(Request $request)
+    {
+        $id = Encryption::decodeId($request->get('id'));
+        $this->validate($request, [
+            'company_id' => 'required',
+            'sms_api_url_for_token' => 'required',
+            'sms_client_id' => 'required',
+            'sms_client_secret' => 'required',
+        ]);
+
+        try {
+            $smsData = SmsApiInfo::where('id', $id)->first();
+            $smsData->company_id = $request->get('company_id');
+            $smsData->SMS_API_URL_FOR_TOKEN = $request->get('sms_api_url_for_token');
+            $smsData->SMS_CLIENT_ID = $request->get('sms_client_id');
+            $smsData->SMS_CLIENT_SECRET = $request->get('sms_client_secret');
+            $smsData->SMS_GRANT_TYPE = $request->get('sms_grant_type');
+            $smsData->SMS_API_URL_FOR_SEND = $request->get('sms_api_url_for_send');
+            $smsData->SMS_API_URL_FOR_SEND_bulk = $request->get('sms_api_url_for_send_bulk');
+            $smsData->SMS_API_URL_FOR_TOKEN_BALANCE = $request->get('sms_api_url_for_token_balance');
+            $smsData->SMS_CLIENT_SECRET_BALANCE = $request->get('sms_client_secret_balance');
+            $smsData->SMS_CLIENT_ID_BALANCE = $request->get('sms_client_id_balance');
+            $smsData->SMS_API_URL_FOR_BALANCE = $request->get('sms_api_url_for_balance');
+            $smsData->save();
+            return response()->json(['status' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false,'message' => $e->getMessage()]);
+        }
+    }
+    public function changeStatus($id, $status_id)
+    {
+        try {
+            $row_id = Encryption::decodeId($id);
+            $status = $status_id;
+            $data = SmsApiInfo::find($row_id);
+            $data->status = $status;
+            $data->save();
+            $message = '';
+            if($status_id == 1){
+                $message = 'Status Activated Successfully.';
+            }else{
+                $message = 'Status Inactivated Successfully.';
+            }
+            return response()->json([
+                'status' => true,
+                'message' => $message,
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+}// end -:- SMSCredentialController
