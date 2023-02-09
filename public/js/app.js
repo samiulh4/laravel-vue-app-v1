@@ -2004,8 +2004,31 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _axiosConfig__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../axiosConfig */ "./resources/js/axiosConfig.js");
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  computed: _objectSpread(_objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])('currentUser', {
+    authUser: function authUser(state) {
+      return state.user;
+    }
+  })), Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])('currentUser', {
+    authToken: function authToken(state) {
+      return state.token;
+    }
+  })), Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])('currentUser', {
+    authLoggedIn: function authLoggedIn(state) {
+      return state.isLoggedIn;
+    }
+  })),
   data: function data() {
     return {
       articleData: {},
@@ -2032,7 +2055,29 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         alert(error.data.message);
       });
+    },
+    onFileChange: function onFileChange(event) {
+      this.formData.photo = event.target.files[0];
+    },
+    saveForm: function saveForm() {
+      var _this2 = this;
+      var form = new FormData();
+      form.append('title', this.formData.title);
+      form.append('context', this.formData.context);
+      form.append('photo', this.formData.photo);
+      _axiosConfig__WEBPACK_IMPORTED_MODULE_2__["default"].defaults.headers.post['Content-Type'] = 'multipart/form-data';
+      _axiosConfig__WEBPACK_IMPORTED_MODULE_2__["default"].post('/api/blog/store', form).then(function (response) {
+        _this2.articleData.unshift(response.data.article);
+        _this2.$swal('Success', response.data.message, 'OK');
+      })["catch"](function (error) {
+        _this2.$swal('Error', error.message, 'OK');
+      });
     }
+  },
+  mounted: function mounted() {
+    //The mounted lifecycle hook is called after the component has been fully rendered
+    // and its computed properties have been updated.
+    this.formData.created_by = this.authUser.id;
   }
 });
 
@@ -2384,7 +2429,17 @@ var render = function render() {
     staticClass: "col-md-3"
   }), _vm._v(" "), _c("div", {
     staticClass: "col-md-6"
-  }, [_vm._m(0), _vm._v(" "), _vm._l(_vm.articleData.data, function (article) {
+  }, [_vm.authLoggedIn == true ? _c("div", {
+    staticClass: "card my-4"
+  }, [_c("div", {
+    staticClass: "card-body"
+  }, [_c("button", {
+    staticClass: "btn btn-lg btn-light w-100",
+    attrs: {
+      "data-toggle": "modal",
+      "data-target": "#articleCreateModal"
+    }
+  }, [_vm._v("What's on your mind, " + _vm._s(_vm.authUser.name) + " ?")])])]) : _vm._e(), _vm._v(" "), _vm._l(_vm.articleData, function (article) {
     return _c("div", {
       key: article.id,
       staticClass: "card my-4 article_card"
@@ -2414,26 +2469,7 @@ var render = function render() {
     }, [_vm._v("Details")])])]);
   })], 2), _vm._v(" "), _c("div", {
     staticClass: "col-md-3"
-  })]), _vm._v(" "), _vm._m(1)]);
-};
-var staticRenderFns = [function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", {
-    staticClass: "card my-4"
-  }, [_c("div", {
-    staticClass: "card-body"
-  }, [_c("button", {
-    staticClass: "btn btn-lg btn-light w-100",
-    attrs: {
-      "data-toggle": "modal",
-      "data-target": "#articleCreateModal"
-    }
-  }, [_vm._v("What's on your mind , Sami ?")])])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", {
+  })]), _vm._v(" "), _c("div", {
     staticClass: "modal fade",
     attrs: {
       id: "articleCreateModal",
@@ -2445,7 +2481,114 @@ var staticRenderFns = [function () {
     staticClass: "modal-dialog modal-md modal-dialog-centered"
   }, [_c("div", {
     staticClass: "modal-content"
-  }, [_c("form", [_c("div", {
+  }, [_c("form", {
+    on: {
+      submit: function submit($event) {
+        $event.preventDefault();
+        return _vm.saveForm();
+      }
+    }
+  }, [_vm._m(0), _vm._v(" "), _c("div", {
+    staticClass: "modal-body"
+  }, [_c("div", {
+    staticClass: "form-group"
+  }, [_c("label", {
+    staticClass: "col-form-label"
+  }, [_vm._v("Title")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formData.title,
+      expression: "formData.title"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      placeholder: "Enter title here"
+    },
+    domProps: {
+      value: _vm.formData.title
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formData, "title", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "form-group"
+  }, [_c("label", {
+    staticClass: "col-form-label"
+  }, [_vm._v("Context")]), _vm._v(" "), _c("textarea", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formData.context,
+      expression: "formData.context"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      placeholder: "What's on your mind , Sami ?"
+    },
+    domProps: {
+      value: _vm.formData.context
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formData, "context", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "form-group"
+  }, [_c("label", {
+    staticClass: "col-form-label"
+  }, [_vm._v("Image")]), _vm._v(" "), _c("input", {
+    staticClass: "form-control",
+    attrs: {
+      type: "file"
+    },
+    on: {
+      change: _vm.onFileChange
+    }
+  })])]), _vm._v(" "), _c("div", {
+    staticClass: "modal-footer"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formData.created_by,
+      expression: "formData.created_by"
+    }],
+    attrs: {
+      type: "hidden"
+    },
+    domProps: {
+      value: _vm.formData.created_by
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formData, "created_by", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("button", {
+    staticClass: "btn btn-sm btn-dark",
+    attrs: {
+      type: "button",
+      "data-dismiss": "modal"
+    }
+  }, [_vm._v("Close")]), _vm._v(" "), _c("button", {
+    staticClass: "btn btn-sm btn-primary",
+    attrs: {
+      type: "submit"
+    }
+  }, [_vm._v("Save")])])])])])])]);
+};
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
     staticClass: "modal-header"
   }, [_c("h5", {
     staticClass: "modal-title text-center",
@@ -2463,50 +2606,7 @@ var staticRenderFns = [function () {
     attrs: {
       "aria-hidden": "true"
     }
-  }, [_vm._v("×")])])]), _vm._v(" "), _c("div", {
-    staticClass: "modal-body"
-  }, [_c("div", {
-    staticClass: "form-group"
-  }, [_c("label", {
-    staticClass: "col-form-label"
-  }, [_vm._v("Title")]), _vm._v(" "), _c("input", {
-    staticClass: "form-control",
-    attrs: {
-      type: "text",
-      placeholder: "Enter title here"
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "form-group"
-  }, [_c("label", {
-    staticClass: "col-form-label"
-  }, [_vm._v("Context")]), _vm._v(" "), _c("textarea", {
-    staticClass: "form-control",
-    attrs: {
-      placeholder: "What's on your mind , Sami ?"
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "form-group"
-  }, [_c("label", {
-    staticClass: "col-form-label"
-  }, [_vm._v("Image")]), _vm._v(" "), _c("input", {
-    staticClass: "form-control",
-    attrs: {
-      type: "file"
-    }
-  })])]), _vm._v(" "), _c("div", {
-    staticClass: "modal-footer"
-  }, [_c("button", {
-    staticClass: "btn btn-sm btn-dark",
-    attrs: {
-      type: "button",
-      "data-dismiss": "modal"
-    }
-  }, [_vm._v("Close")]), _vm._v(" "), _c("button", {
-    staticClass: "btn btn-sm btn-primary",
-    attrs: {
-      type: "button"
-    }
-  }, [_vm._v("Save")])])])])])]);
+  }, [_vm._v("×")])])]);
 }];
 render._withStripped = true;
 

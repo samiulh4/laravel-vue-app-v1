@@ -5,13 +5,13 @@
 
             </div><!-- ./col-md-3 -->
             <div class="col-md-6">
-                <div class="card my-4">
+                <div class="card my-4" v-if="authLoggedIn == true">
                     <div class="card-body">
-                        <button class="btn btn-lg btn-light w-100"  data-toggle="modal" data-target="#articleCreateModal">What's on your mind , Sami ?</button>
+                        <button class="btn btn-lg btn-light w-100"  data-toggle="modal" data-target="#articleCreateModal">What's on your mind, {{authUser.name}} ?</button>
                     </div>
                 </div>
                 <!-- Articles -->
-                <div class="card my-4 article_card" v-for="article in articleData.data" :key="article.id">
+                <div class="card my-4 article_card" v-for="article in articleData" :key="article.id">
                     <div class="card-header">
                         <h4>{{ article.title }}</h4>
                         <h5>{{ article.created_at}}</h5>
@@ -38,7 +38,7 @@
         <div class="modal fade" id="articleCreateModal" tabindex="-1" aria-labelledby="articleCreateModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-md modal-dialog-centered">
                 <div class="modal-content">
-                    <form>
+                    <form @submit.prevent="saveForm()">
                     <div class="modal-header">
                         <h5 class="modal-title text-center" id="articleCreateModalLabel">Create Article</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -49,21 +49,22 @@
 
                             <div class="form-group">
                                 <label class="col-form-label">Title</label>
-                                <input type="text" class="form-control" placeholder="Enter title here"/>
+                                <input type="text" v-model="formData.title" class="form-control" placeholder="Enter title here"/>
                             </div>
                             <div class="form-group">
                                 <label class="col-form-label">Context</label>
-                                <textarea class="form-control" placeholder="What's on your mind , Sami ?"></textarea>
+                                <textarea v-model="formData.context" class="form-control" placeholder="What's on your mind , Sami ?"></textarea>
                             </div>
                             <div class="form-group">
                                 <label class="col-form-label">Image</label>
-                                <input type="file" class="form-control"/>
+                                <input type="file" class="form-control" v-on:change="onFileChange"/>
                             </div>
 
                     </div>
                     <div class="modal-footer">
+                        <input type="hidden" v-model="formData.created_by"/>
                         <button type="button" class="btn btn-sm btn-dark" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-sm btn-primary">Save</button>
+                        <button type="submit" class="btn btn-sm btn-primary">Save</button>
                     </div>
                     </form>
                 </div>
@@ -76,8 +77,20 @@
 </template>
 <script>
     import axios from "axios";
-
+    import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
+    import axiosConfig from "../../axiosConfig";
     export default {
+        computed: {
+            ...mapState('currentUser', {
+                authUser: state => state.user
+            }),
+            ...mapState('currentUser', {
+                authToken: state => state.token
+            }),
+            ...mapState('currentUser', {
+                authLoggedIn: state => state.isLoggedIn
+            }),
+        },
         data(){
             return{
                 articleData:{},
@@ -103,7 +116,29 @@
                 }).catch(error =>{
                     alert(error.data.message);
                 })
+            },
+            onFileChange(event) {
+                this.formData.photo = event.target.files[0]
+            },
+            saveForm(){
+                let form = new FormData();
+                form.append('title',this.formData.title);
+                form.append('context',this.formData.context);
+                form.append('photo',this.formData.photo);
+                axiosConfig.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+                axiosConfig.post('/api/blog/store', form)
+                    .then(response => {
+                        this.articleData.unshift(response.data.article);
+                        this.$swal('Success', response.data.message, 'OK');
+                    }).catch(error => {
+                    this.$swal('Error', error.message, 'OK');
+                })
             }
+        },
+        mounted() {
+            //The mounted lifecycle hook is called after the component has been fully rendered
+            // and its computed properties have been updated.
+            this.formData.created_by = this.authUser.id;
         }
     }
 </script>
