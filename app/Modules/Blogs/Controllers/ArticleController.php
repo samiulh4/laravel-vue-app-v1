@@ -5,6 +5,8 @@ namespace App\Modules\Blogs\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Modules\Blogs\Models\Article;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller
 {
@@ -23,6 +25,7 @@ class ArticleController extends Controller
             $image->move(public_path($image_path),  $image_name);
             $article->photo =  $image_db_url;
         }
+       // $article->created_by = Auth::user()->id;
         $article->save();
         return response()->json([
             'status' => true,

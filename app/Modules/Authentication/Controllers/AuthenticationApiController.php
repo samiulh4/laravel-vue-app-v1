@@ -23,6 +23,8 @@ class AuthenticationApiController extends Controller
                 "message" => "Invalid credentials !"
             ]);
         }
+        //$user = auth()->user();
+        //Auth()->login($user);
         return response()->json([
             "success" => true,
             "status" => 200,
@@ -38,6 +40,7 @@ class AuthenticationApiController extends Controller
     {
         try{
             auth()->logout();
+            //Auth::logout();
             return response()->json([
                 "success" => true,
                 "status" => 200,
