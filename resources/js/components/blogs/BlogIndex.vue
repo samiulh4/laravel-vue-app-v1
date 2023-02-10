@@ -13,23 +13,29 @@
                 <!-- Articles -->
                 <div class="card my-4 article_card" v-for="article in articleData" :key="article.id">
                     <div class="card-header">
-                        <h4>{{ article.title }}</h4>
-                        <h5>{{ article.created_at}}</h5>
+                        <h5 class="text-dark">{{ article.title }}</h5>
                     </div>
                     <img v-bind:src="article.photo" class="card-img-top img-fluid" alt="IMAGE NOT FOUND"/>
                     <div class="card-body">
                         <p class="card-text">{{ article.context }}</p>
                     </div>
                     <div class="card-footer">
-                        <p class="float-left">Created By&nbsp;-&nbsp;<span class="text-primary">{{ article.author_name}}</span></p>
-                        <a href="#" class="btn btn-sm btn-primary float-right">Details</a>
+                        <div class="float-left">
+                            <small class="text-muted">
+                                Created By&nbsp;-&nbsp;
+                                <a href="#" >{{ article.author_name}}</a>
+                                |
+                                <span>{{ article.created_at}}</span>
+                            </small>
+                        </div>
+                        <a href="#" class="btn btn-sm btn-dark float-right">Details</a>
                     </div>
                 </div>
                 <!-- Articles -->
 
             </div><!-- ./col-md-6 -->
             <div class="col-md-3">
-
+                <BlogUserCard v-bind:authUserProps="authUser" v-if="authLoggedIn"/>
             </div><!-- ./col-md-3 -->
         </div><!-- ./row -->
 
@@ -62,7 +68,6 @@
 
                     </div>
                     <div class="modal-footer">
-                        <input type="hidden" v-model="formData.created_by"/>
                         <button type="button" class="btn btn-sm btn-dark" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-sm btn-primary">Save</button>
                     </div>
@@ -76,10 +81,14 @@
     </div><!-- ./container -->
 </template>
 <script>
+    import BlogUserCard from "./BlogUserCard.vue";
     import axios from "axios";
     import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
     import axiosConfig from "../../axiosConfig";
     export default {
+        components:{
+          BlogUserCard,
+        },
         computed: {
             ...mapState('currentUser', {
                 authUser: state => state.user
@@ -98,7 +107,6 @@
                     title: '',
                     context: '',
                     photo: '',
-                    created_by: '',
                 }
             }
         },
@@ -138,7 +146,7 @@
         mounted() {
             //The mounted lifecycle hook is called after the component has been fully rendered
             // and its computed properties have been updated.
-            this.formData.created_by = this.authUser.id;
+            //this.formData.created_by = this.authUser.id;
         }
     }
 </script>

@@ -22,17 +22,18 @@ class BlogApiController extends Controller
             $articles = Article::leftJoin('users', 'blogs_articles.created_by', '=', 'users.id')
                 ->select('blogs_articles.*', 'users.name as author_name')
                 ->orderBy('blogs_articles.id', 'desc')
+                ->offset(0)
+                ->limit(2)
                 ->get();
             $data = [];
             foreach ($articles as $key => $article){
                 $photo = asset($article->photo);
                 array_push($data, [
-                    'sn' => $key + 1,
                     'id' => $article->id,
                     'title' => $article->title,
                     'context' => \Illuminate\Support\Str::limit($article->context, 150, $end='...'),
                     'photo' =>  $photo,
-                    'created_at' => date('Y M d, h:i:s A', strtotime($article->created_at)),
+                    'created_at' => date('Y M D, h:i:s A', strtotime($article->created_at)),
                     'author_name' => $article->author_name,
                 ]); //end -:- array push
             }
