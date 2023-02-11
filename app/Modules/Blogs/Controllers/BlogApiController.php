@@ -15,32 +15,22 @@ use App\Modules\Blogs\Models\Article;
 class BlogApiController extends Controller
 {
 
-    public function index(Request $request)
+    public function index(Request $request, $page)
     {
-        $limit = 10;
         try{
+            $limit = 5;
+            $offset = $page == 0 ? 0 : $page*$limit;
             $articles = Article::leftJoin('users', 'blogs_articles.created_by', '=', 'users.id')
                 ->select('blogs_articles.*', 'users.name as author_name')
                 ->orderBy('blogs_articles.id', 'desc')
-                ->offset(0)
-                ->limit(2)
-                ->get();
-            $data = [];
-            foreach ($articles as $key => $article){
-                $photo = asset($article->photo);
-                array_push($data, [
-                    'id' => $article->id,
-                    'title' => $article->title,
-                    'context' => \Illuminate\Support\Str::limit($article->context, 150, $end='...'),
-                    'photo' =>  $photo,
-                    'created_at' => date('Y M D, h:i:s A', strtotime($article->created_at)),
-                    'author_name' => $article->author_name,
-                ]); //end -:- array push
-            }
+                ->offset($offset)
+                ->limit($limit)
+                ->get()
+                ->toArray();
             return response()->json([
                 "success" => true,
                 "status" => 200,
-                "articles" => $data,
+                "articles" => $articles,
                 "message" => 'Articles get successfully.',
             ]);
         }catch (\Exception $e){
@@ -76,7 +66,8 @@ class BlogApiController extends Controller
             $newArticle = Article::leftJoin('users', 'blogs_articles.created_by', '=', 'users.id')
                 ->select('blogs_articles.*', 'users.name as author_name')
                 ->where('blogs_articles.id', $article->id)
-                ->first();
+                ->first()
+                ->toArray();
             return response()->json([
                 'success' => true,
                 'status' => 200,
@@ -91,4 +82,26 @@ class BlogApiController extends Controller
             ]);
         }
     }// end -:- store()
+    public function details(Request $request, $id)
+    {
+        try{
+            $article = Article::leftJoin('users', 'blogs_articles.created_by', '=', 'users.id')
+                ->select('blogs_articles.*', 'users.name as author_name')
+                ->where('blogs_articles.id', $id)
+                ->first();
+                //->toArray();
+            return response()->json([
+                'success' => true,
+                'status' => 200,
+                'message' => ' Fetched Successfully ['.$article->title.']',
+                'article' => $article,
+            ]);
+        }catch(\Exception $e){
+            return response()->json([
+                'success' => false,
+                'status' => 401,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }// end -:- details()
 }// end -:- BlogApiController

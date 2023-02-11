@@ -11,16 +11,21 @@
     <title>Laravel & Vue App | Vue</title>
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <!-- Fontawesome CSS -->
+    <link href="{{ asset('assets/common/plugins/fontawesome/css/all.min.css') }}" rel="stylesheet">
+    <!-- Custom CSS -->
     <link href="{{ asset('assets/common/styles/vue/style.css') }}" rel="stylesheet">
 </head>
 
 <body>
     <div id="root">
         <root></root>
-        <router-view></router-view><!-- where to place route componennt-->
+        <router-view></router-view><!-- where to place route component-->
     </div>
     <!-- Scripts -->
     <script src="{{ mix('js/app.js') }}"></script>
+    <!-- Fontawesome JS -->
+    <script src="{{ asset('assets/common/plugins/fontawesome/js/all.min.js') }}"></script>
 </body>
 
 </html>

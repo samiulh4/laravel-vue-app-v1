@@ -2,22 +2,35 @@
     <div class="container-fluid content_wrapper">
         <div class="row">
             <div class="col-md-3">
-
-            </div><!-- ./col-md-3 -->
+                <BlogUserCard v-bind:authUserProps="authUser" v-if="authLoggedIn"/>
+            </div><!-- ./col-md-6 (Page Right Section) -->
             <div class="col-md-6">
-                <div class="card my-4" v-if="authLoggedIn == true">
+
+                <div class="mt-4" v-if="message">
+                    <div :class="`alert ${alertType} alert-dismissible fade show`" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+
+
+                <div class="card mt-4" v-if="authLoggedIn == true">
                     <div class="card-body">
                         <button class="btn btn-lg btn-light w-100"  data-toggle="modal" data-target="#articleCreateModal">What's on your mind, {{authUser.name}} ?</button>
                     </div>
                 </div>
+
+
                 <!-- Articles -->
-                <div class="card my-4 article_card" v-for="article in articleData" :key="article.id">
+                <div class="card mt-4 article_card" v-for="article in articleData" :key="article.id">
                     <div class="card-header">
-                        <h5 class="text-dark">{{ article.title }}</h5>
+                        <h5 class="text-dark">{{ article.title.slice(0, 70) }}... || {{ article.id }}</h5>
                     </div>
-                    <img v-bind:src="article.photo" class="card-img-top img-fluid" alt="IMAGE NOT FOUND"/>
+                    <img :src="article.photo" class="img-fluid w-100 card-img-top" alt="IMAGE NOT FOUND"/>
                     <div class="card-body">
-                        <p class="card-text">{{ article.context }}</p>
+                        <p class="card-text">{{ article.context.slice(0, 200) }}...</p>
                     </div>
                     <div class="card-footer">
                         <div class="float-left">
@@ -28,15 +41,56 @@
                                 <span>{{ article.created_at}}</span>
                             </small>
                         </div>
-                        <a href="#" class="btn btn-sm btn-dark float-right">Details</a>
+                        <router-link :to="{name: 'BlogDetails', params:{id: article.id}}" class="btn btn-sm btn-dark float-right"><i class="fa fa-circle-info"></i> Details</router-link>
                     </div>
                 </div>
                 <!-- Articles -->
+                <div class="text-center mt-4">
+                    <button class="btn btn-md btn-dark" @click="loadMore">Load More</button>
+                </div>
 
-            </div><!-- ./col-md-6 -->
+            </div><!-- ./col-md-6 (Page Middle Section) -->
             <div class="col-md-3">
-                <BlogUserCard v-bind:authUserProps="authUser" v-if="authLoggedIn"/>
-            </div><!-- ./col-md-3 -->
+                <!-- Search widget-->
+                <div class="card mt-4">
+                    <div class="card-header">Search</div>
+                    <div class="card-body">
+                        <div class="input-group">
+                            <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
+                            <button class="btn btn-primary" id="button-search" type="button">Go!</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Search widget-->
+                <!-- Tags widget-->
+                <div class="card mt-4">
+                    <div class="card-header">Tags</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <ul class="list-unstyled mb-0">
+                                    <li><a href="#!" class="badge badge-dark text-decoration-none link-dark">Web Design</a></li>
+                                    <li><a href="#!" class="badge badge-dark text-decoration-none link-dark">HTML</a></li>
+                                    <li><a href="#!" class="badge badge-dark text-decoration-none link-dark">Freebies</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-sm-6">
+                                <ul class="list-unstyled mb-0">
+                                    <li><a href="#!" class="badge badge-dark text-decoration-none link-dark">JavaScript</a></li>
+                                    <li><a href="#!" class="badge badge-dark text-decoration-none link-dark">CSS</a></li>
+                                    <li><a href="#!" class="badge badge-dark text-decoration-none link-dark">Tutorials</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Tags widget-->
+
+
+
+
+
+            </div><!-- ./col-md-6 (Page Left Section) -->
         </div><!-- ./row -->
 
 
@@ -81,10 +135,10 @@
     </div><!-- ./container -->
 </template>
 <script>
-    import BlogUserCard from "./BlogUserCard.vue";
     import axios from "axios";
-    import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
     import axiosConfig from "../../axiosConfig";
+    import BlogUserCard from "./BlogUserCard.vue";
+    import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
     export default {
         components:{
           BlogUserCard,
@@ -102,27 +156,50 @@
         },
         data(){
             return{
-                articleData:{},
+                articleData:[],
                 formData:{
                     title: '',
                     context: '',
-                    photo: '',
-                }
+                    photo: null,
+                },
+                message: '',
+                alertType:'alert-light',
+                page: 0,
             }
         },
         created() {
             this.getArticleData();
         },
         methods:{
-            getArticleData(){
-                axios.get('/api/blog/index').then(response =>{
+            getArticleData(page){
+                if (typeof page === 'undefined') {
+                    page = 0;
+                }
+                //console.log('page +>',page);
+                axios.get('/api/blog/index/'+ page).then(response =>{
                     if(response.data.success == true){
-                        this.articleData = response.data.articles;
+                        //this.articleData = response.data.articles;
+                        this.articleData = [...this.articleData, ...response.data.articles];
+                        //this.articleData = [...this.articleData, ...Array.from(response.data.articles)];
+                        //this.articleData = [...this.articleData, ...Object.values(response.data.articles)];
+                        //this.articleData.splice(0, this.articleData.length);
+                        /*response.data.articles.forEach(article => {
+                            this.articleData.push(article);
+                        });*/
+                        if(this.articleData.length <= 0){
+                            this.message = 'No more articles found !';
+                            this.alertType = 'alert-warning';
+                        }
                     }else {
-                        alert(response.data.message);
+                        this.$swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.data.message,
+                        });
                     }
                 }).catch(error =>{
-                    alert(error.data.message);
+                    this.message =  error.message;
+                    this.alertType = 'alert-danger';
                 })
             },
             onFileChange(event) {
@@ -136,17 +213,49 @@
                 axiosConfig.defaults.headers.post['Content-Type'] = 'multipart/form-data';
                 axiosConfig.post('/api/blog/store', form)
                     .then(response => {
-                        this.articleData.unshift(response.data.article);
-                        this.$swal('Success', response.data.message, 'OK');
+                        if(response.data.success == true){
+                            this.articleData.unshift(response.data.article);
+                            this.formData = {
+                                title: '',
+                                context: '',
+                                photo: null,
+                            };
+                            this.$swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: response.data.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        }else{
+                            this.$swal('Error', response.data.message, 'OK');
+                        }
+
                     }).catch(error => {
-                    this.$swal('Error', error.message, 'OK');
+                    this.$swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: error.message,
+                    })
                 })
-            }
+            },
+            handleScroll() {
+                if (window.scrollY + window.innerHeight >= document.body.scrollHeight - 50) {
+                    this.page = this.page + 1;
+                    this.getArticleData(this.page);
+                }
+            },
+            loadMore() {
+                this.page = this.page + 1;
+                this.getArticleData(this.page);
+            },
         },
         mounted() {
             //The mounted lifecycle hook is called after the component has been fully rendered
             // and its computed properties have been updated.
-            //this.formData.created_by = this.authUser.id;
+            //window.addEventListener("scroll", this.handleScroll);
+            // setTimeout(function() {
+            // }, 1000);
         }
     }
 </script>
