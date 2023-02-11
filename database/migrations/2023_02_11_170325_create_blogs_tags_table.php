@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBlogsArticlesTable extends Migration
+class CreateBlogsTagsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class CreateBlogsArticlesTable extends Migration
      */
     public function up()
     {
-        Schema::create('blogs_articles', function (Blueprint $table) {
+        Schema::create('blogs_tags', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('title', 100);
-            $table->longText('context');
-            $table->string('photo', 200)->nullable()->default('assets/common/img/default/default-blog-img.png');
-            $table->string('tag_ids', 100)->nullable()->default('1');// Others
+            $table->string('name', 20)->unique();
+            $table->string('tag_classes', 100)->nullable()->default('badge badge-dark text-decoration-none');
             $table->bigInteger('created_by')->unsigned()->nullable();
             $table->bigInteger('updated_by')->unsigned()->nullable();
             $table->timestamps();
@@ -32,6 +30,6 @@ class CreateBlogsArticlesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('blogs_articles');
+        Schema::dropIfExists('blogs_tags');
     }
 }

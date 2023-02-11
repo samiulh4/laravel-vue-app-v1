@@ -43,3 +43,6 @@ html,body{
 .content_wrapper .article_card img{
     height: 35vh;
 }
+.article_content .article_details_img{
+    height:45vh;
+}

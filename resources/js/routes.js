@@ -8,6 +8,7 @@ import About from './components/about/About.vue';
 // Blog Components
 import BlogCreate from './components/blogs/BlogCreate.vue';
 import BlogIndex from './components/blogs/BlogIndex.vue';
+import BlogDetails from "./components/blogs/BlogDetails.vue";
 
 let routes = [
     {path: '/about', component: About, name: 'About'},
@@ -19,6 +20,7 @@ let routes = [
     // Blog Routes
     {path: '/blog/create', component: BlogCreate, name: 'BlogCreate'},
     {path: '/blog/index', component: BlogIndex, name: 'BlogIndex'},
+    {path: '/blog/details/:id', component: BlogDetails, name: 'BlogDetails'},
 ];
 
 export default new VueRouter({
