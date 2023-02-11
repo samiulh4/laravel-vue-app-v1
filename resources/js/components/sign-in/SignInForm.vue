@@ -2,7 +2,7 @@
     <div class="container-fluid content_wrapper">
         <div class="row">
             <div class="col-md-8 offset-md-4 mx-auto">
-                <div class="card">
+                <div class="card mt-4">
                     <div class="card-header">
                         <h3 class="text-center text-success">Signin</h3>
                     </div>
@@ -16,12 +16,27 @@
                                 <label>Password</label>
                                 <input type="password" class="form-control" v-model="user.password"/>
                             </div>
-                            <div class="form-group form-check">
-                                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                <label class="form-check-label" for="exampleCheck1">Check me out</label>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group form-check">
+                                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                        <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <button type="submit" class="btn btn-primary">Sign In</button>
+                                </div>
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
+                        <hr/>
+                        <div class="row">
+                            <div class="col-md-6 offset-md-3">
+                                <a href="#" class="btn btn-danger btn-block">Login with Google</a>
+                                <a href="#" class="btn btn-primary btn-block">Login with Facebook</a>
+                                <a href="#" class="btn btn-dark btn-block">Login with Github</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -41,7 +56,6 @@
         methods: {
             login() {
                 this.$store.dispatch('currentUser/loginUser', this.user);
-                //this.$swal('Hello Vue world!!!');
             }
         },
         mounted() {

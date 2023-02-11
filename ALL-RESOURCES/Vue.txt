@@ -29,3 +29,6 @@ https://www.youtube.com/watch?v=8-bD2faBtVM&t=165s
 }
 
 https://sweetalert2.github.io/
+npm install select2 vue-select2
+npm install v-select2-component --save
+npm install select2@4.0.x

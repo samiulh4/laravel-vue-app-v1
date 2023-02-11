@@ -116,6 +116,12 @@
                                 <textarea v-model="formData.context" class="form-control" placeholder="What's on your mind , Sami ?"></textarea>
                             </div>
                             <div class="form-group">
+                                <label class="col-form-label">Tags</label>
+                                <select class="form-control js-example-basic-single" v-model="formData.tag_ids" :settings="settings">
+                                    <option v-for="option in tagData" :key="option.id" :value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label class="col-form-label">Image</label>
                                 <input type="file" class="form-control" v-on:change="onFileChange"/>
                             </div>
@@ -139,6 +145,9 @@
     import axiosConfig from "../../axiosConfig";
     import BlogUserCard from "./BlogUserCard.vue";
     import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
+
+    //import { Select2 } from 'vue-select2';// no need
+    //import Select2 from 'v-select2-component';// no need
     export default {
         components:{
           BlogUserCard,
@@ -161,14 +170,24 @@
                     title: '',
                     context: '',
                     photo: null,
+                    tag_ids: '',
                 },
                 message: '',
                 alertType:'alert-light',
                 page: 0,
+                tagData:{
+                    id: '',
+                    name:''
+                },
+                settings: {
+                    minimumInputLength: 0,
+                    allowClear: true
+                }
             }
         },
         created() {
             this.getArticleData();
+            this.getTags();
         },
         methods:{
             getArticleData(page){
@@ -201,6 +220,19 @@
                     this.message =  error.message;
                     this.alertType = 'alert-danger';
                 })
+            },
+            getTags(){
+                axios.get('/api/blog/tag/get-tags').then(response =>{
+                    if(response.data.success == true){
+                        this.tagData = response.data.tags;
+                    }else {
+                        this.message = response.data.message;
+                        this.alertType = 'alert-danger';
+                    }
+                }).catch(error =>{
+                    this.message =  error.message;
+                    this.alertType = 'alert-danger';
+                });
             },
             onFileChange(event) {
                 this.formData.photo = event.target.files[0]
@@ -249,6 +281,12 @@
                 this.page = this.page + 1;
                 this.getArticleData(this.page);
             },
+            myChangeEvent(val){
+                console.log(val);
+            },
+            mySelectEvent({id, text}){
+                console.log({id, text})
+            }
         },
         mounted() {
             //The mounted lifecycle hook is called after the component has been fully rendered
@@ -256,9 +294,14 @@
             //window.addEventListener("scroll", this.handleScroll);
             // setTimeout(function() {
             // }, 1000);
+            $('.js-example-basic-single').select2();
         }
     }
 </script>
 <style>
+
+    .select2{
+        width: 100% !important;
+    }
 
 </style>

@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 
 use App\Modules\Users\Models\User;
 use App\Modules\Blogs\Models\Article;
+use App\Modules\Blogs\Models\Tag;
 
 
 class BlogApiController extends Controller
@@ -104,4 +105,22 @@ class BlogApiController extends Controller
             ]);
         }
     }// end -:- details()
+    public function getTags(Request $request)
+    {
+        try{
+            $tags = Tag::orderBy('name', 'asc')->get(['id', 'name']);
+            return response()->json([
+                'success' => true,
+                'status' => 200,
+                'message' => 'All tags get successfully.',
+                'tags' => $tags,
+            ]);
+        }catch (\Exception $e){
+            return response()->json([
+                'success' => false,
+                'status' => 401,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }// end -:- getTags()
 }// end -:- BlogApiController
