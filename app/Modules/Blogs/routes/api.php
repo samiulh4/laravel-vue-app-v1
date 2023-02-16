@@ -8,4 +8,5 @@ Route::group(['module' => 'Blogs', 'middleware' => ['api'], 'prefix' => '/api', 
 # with [jwt.verify]
 Route::group(['module' => 'Blogs', 'middleware' => ['api', 'jwt.verify'], 'prefix' => '/api', 'namespace' => 'App\Modules\Blogs\Controllers'], function() {
     Route::post('/blog/store', 'BlogApiController@store');
+    Route::get('/blog/edit/{id}', 'BlogApiController@edit');
 });

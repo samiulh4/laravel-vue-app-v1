@@ -18,7 +18,7 @@
 
                 <div class="card mt-4" v-if="authLoggedIn == true">
                     <div class="card-body">
-                        <button class="btn btn-lg btn-light w-100"  data-toggle="modal" data-target="#articleCreateModal">What's on your mind, {{authUser.name}} ?</button>
+                        <button class="btn btn-lg btn-light w-100" @click="openCreateFormModal">What's on your mind, {{authUser.name}} ?</button>
                     </div>
                 </div>
 
@@ -28,7 +28,7 @@
                     <div class="card-header">
                         <h5 class="text-dark">{{ article.title.slice(0, 70) }}... || {{ article.id }}</h5>
                     </div>
-                    <img :src="article.photo" class="img-fluid w-100 card-img-top" alt="IMAGE NOT FOUND"/>
+                    <img :src="article.photo" class="img-fluid w-100 card-img-top" alt="COVER IMAGE NOT FOUND" @error="setAltImg"/>
                     <div class="card-body">
                         <p class="card-text">{{ article.context.slice(0, 200) }}...</p>
                     </div>
@@ -42,6 +42,8 @@
                             </small>
                         </div>
                         <router-link :to="{name: 'BlogDetails', params:{id: article.id}}" class="btn btn-sm btn-dark float-right"><i class="fa fa-circle-info"></i> Details</router-link>
+
+                        <button class="btn btn-sm btn-success float-right" v-if="authLoggedIn == true" @click="openEditFormModal(article.id)"><i class="fa fa-circle-info"></i> Edit</button>
                     </div>
                 </div>
                 <!-- Articles -->
@@ -94,13 +96,13 @@
         </div><!-- ./row -->
 
 
-        <!-- start -:- Article Create Modal -->
-        <div class="modal fade" id="articleCreateModal" tabindex="-1" aria-labelledby="articleCreateModalLabel" aria-hidden="true">
+        <!-- start -:- Article Create & Edit Modal -->
+        <div class="modal fade" id="articleCreatAndEditModal" tabindex="-1" aria-labelledby="articleCreatAndEditModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-md modal-dialog-centered">
                 <div class="modal-content">
                     <form @submit.prevent="saveForm()">
                     <div class="modal-header">
-                        <h5 class="modal-title text-center" id="articleCreateModalLabel">Create Article</h5>
+                        <h5 class="modal-title text-center" id="articleCreatAndEditModalLabel">Create Article</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -113,11 +115,11 @@
                             </div>
                             <div class="form-group">
                                 <label class="col-form-label">Context</label>
-                                <textarea v-model="formData.context" class="form-control" placeholder="What's on your mind , Sami ?"></textarea>
+                                <textarea v-model="formData.context" class="form-control" v-bind:placeholder="['What\'s on your mind , '] + authUser.name+[' ?']"></textarea>
                             </div>
                             <div class="form-group">
                                 <label class="col-form-label">Tags</label>
-                                <select class="form-control js-example-basic-single" v-model="formData.tag_ids" :settings="settings">
+                                <select class="form-control" v-model="formData.tag_ids">
                                     <option v-for="option in tagData" :key="option.id" :value="option.id">{{ option.name }}</option>
                                 </select>
                             </div>
@@ -135,7 +137,7 @@
                 </div>
             </div>
         </div>
-        <!-- end -:- Article Create Modal -->
+        <!-- end -:- Article Create & Edit Modal -->
 
 
     </div><!-- ./container -->
@@ -146,8 +148,12 @@
     import BlogUserCard from "./BlogUserCard.vue";
     import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
 
+    //import $ from 'jquery';
+    //import 'select2/dist/js/select2.min.js';
+    //import 'select2/dist/css/select2.min.css';
     //import { Select2 } from 'vue-select2';// no need
     //import Select2 from 'v-select2-component';// no need
+
     export default {
         components:{
           BlogUserCard,
@@ -167,6 +173,7 @@
             return{
                 articleData:[],
                 formData:{
+                    id: '',
                     title: '',
                     context: '',
                     photo: null,
@@ -179,10 +186,6 @@
                     id: '',
                     name:''
                 },
-                settings: {
-                    minimumInputLength: 0,
-                    allowClear: true
-                }
             }
         },
         created() {
@@ -242,16 +245,15 @@
                 form.append('title',this.formData.title);
                 form.append('context',this.formData.context);
                 form.append('photo',this.formData.photo);
+                form.append('tag_ids',this.formData.tag_ids);
+                //console.log(this.formData.tag_ids);return false;
                 axiosConfig.defaults.headers.post['Content-Type'] = 'multipart/form-data';
                 axiosConfig.post('/api/blog/store', form)
                     .then(response => {
                         if(response.data.success == true){
                             this.articleData.unshift(response.data.article);
-                            this.formData = {
-                                title: '',
-                                context: '',
-                                photo: null,
-                            };
+                            let self = this;
+                            this.resetForm(self);
                             this.$swal.fire({
                                 position: 'top-end',
                                 icon: 'success',
@@ -259,6 +261,7 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             });
+                            $('#articleCreatAndEditModal').modal('hide');
                         }else{
                             this.$swal('Error', response.data.message, 'OK');
                         }
@@ -271,21 +274,58 @@
                     })
                 })
             },
+            resetForm(self){
+                Object.keys(this.formData).forEach(function(key,index) {
+                    self.formData[key] = '';
+                });
+            },
+            loadMore() {
+                this.page = this.page + 1;
+                this.getArticleData(this.page);
+            },
             handleScroll() {
                 if (window.scrollY + window.innerHeight >= document.body.scrollHeight - 50) {
                     this.page = this.page + 1;
                     this.getArticleData(this.page);
                 }
             },
-            loadMore() {
-                this.page = this.page + 1;
-                this.getArticleData(this.page);
+            openCreateFormModal(){
+                this.formData.id = null;
+                $('#articleCreatAndEditModal').modal('show');
             },
-            myChangeEvent(val){
-                console.log(val);
+            getEditData(id)
+            {
+                if (typeof id === 'undefined') {
+                    this.$swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: "ID not found !",
+                    });
+                    return false;
+                }
+                //console.log(id);
+                axiosConfig.get('/api/blog/edit/'+ id).then(response =>{
+                    if(response.data.success == true){
+                        this.formData.title   = response.data.article.title;
+                        this.formData.context = response.data.article.context;
+                        this.formData.photo   = response.data.article.photo;
+                        this.formData.tag_ids = response.data.article.tag_ids;
+                        this.formData.id      = response.data.article.id;
+                    }else{
+                        this.message =  response.data.message;
+                        this.alertType = 'alert-danger';
+                    }
+                }).catch(error => {
+                    this.message =  error.message;
+                    this.alertType = 'alert-danger';
+                });
             },
-            mySelectEvent({id, text}){
-                console.log({id, text})
+            openEditFormModal(id){
+                this.getEditData(id);
+                $('#articleCreatAndEditModal').modal('show');
+            },
+            setAltImg(event) {
+                event.target.src = "https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png"
             }
         },
         mounted() {
@@ -294,14 +334,12 @@
             //window.addEventListener("scroll", this.handleScroll);
             // setTimeout(function() {
             // }, 1000);
-            $('.js-example-basic-single').select2();
+            //$('.js-example-basic-single').select2();
         }
     }
 </script>
 <style>
-
-    .select2{
-        width: 100% !important;
-    }
-
+    /*.select2{*/
+    /*    width: 100% !important;*/
+    /*}*/
 </style>

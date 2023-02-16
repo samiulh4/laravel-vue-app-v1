@@ -62,6 +62,7 @@ class BlogApiController extends Controller
                 'context' => $request->context,
                 'created_by' => Auth::user()->id,
                 'photo' => $photo_path,
+                'tag_ids' => $request->tag_ids,
             ]);
             $article->save();
             $newArticle = Article::leftJoin('users', 'blogs_articles.created_by', '=', 'users.id')
@@ -123,4 +124,26 @@ class BlogApiController extends Controller
             ]);
         }
     }// end -:- getTags()
+    public function edit(Request $request, $id)
+    {
+        try{
+            $article = Article::leftJoin('users', 'blogs_articles.created_by', '=', 'users.id')
+                ->select('blogs_articles.*', 'users.name as author_name')
+                ->where('blogs_articles.id', $id)
+                ->first();
+            //->toArray();
+            return response()->json([
+                'success' => true,
+                'status' => 200,
+                'message' => ' Fetched Successfully ['.$article->title.']',
+                'article' => $article,
+            ]);
+        }catch(\Exception $e){
+            return response()->json([
+                'success' => false,
+                'status' => 401,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }// end -:- edit()
 }// end -:- BlogApiController

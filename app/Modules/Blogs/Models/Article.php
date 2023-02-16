@@ -13,6 +13,7 @@ class Article extends Model {
         'title',
         'context',
         'photo',
+        'tag_ids',
         'created_by',
         'updated_by',
     ];

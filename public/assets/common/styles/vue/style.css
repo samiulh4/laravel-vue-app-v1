@@ -46,3 +46,8 @@ html,body{
 .article_content .article_details_img{
     height:45vh;
 }
+.vue_top_nav_logo{
+    width: 40px;
+    height: 40px;
+    background: transparent;
+}
