@@ -1,6 +1,7 @@
 <template>
-    <div>
+    <div class="vue_root_wrapper">
         <Nav/>
+        <router-view></router-view><!-- where to place route component-->
         <Footer/>
     </div>
 </template>

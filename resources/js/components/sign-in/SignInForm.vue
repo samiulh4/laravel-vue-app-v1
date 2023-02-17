@@ -44,7 +44,11 @@
     </div>
 </template>
 <script>
+    import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
     export default {
+        computed: {
+
+        },
         data: function () {
             return {
                 user: {
@@ -56,9 +60,10 @@
         methods: {
             login() {
                 this.$store.dispatch('currentUser/loginUser', this.user);
-            }
+            },
         },
         mounted() {
+
         }
     }
 </script>

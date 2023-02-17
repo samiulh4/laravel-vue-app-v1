@@ -46,24 +46,35 @@ class BlogApiController extends Controller
     public function store(Request $request)
     {
         try{
-            $user = Auth::user();
-            if($request->file('photo')){
+            $article = Article::firstOrNew(['id' => $request->id]);
+            $article->title = $request->title;
+            $article->context = $request->context;
+            $article->tag_ids = $request->tag_ids;
+            if(!empty($request->id)){
+                $article->updated_by = Auth::user()->id;
+                $article->updated_at = date('Y-m-d H:i:s');
+            }else{
+                $article->created_by = Auth::user()->id;
+                $article->created_at = date('Y-m-d H:i:s');
+            }
+            if(!empty($request->file('photo'))){
                 $image = $request->file('photo');
                 $image_name = 'ARTICLE_'.date('Ymd').time().'.'.$image->getClientOriginalExtension();
                 $image_path = 'uploads/images/articles';
                 $image_db_url =  $image_path.'/'.$image_name;
                 $image->move(public_path($image_path),  $image_name);
                 $photo_path =  $image_db_url;
-            }else{
-                $photo_path =  '/assets/common/img/default/default-blog-img.png';
+                $article->photo = $photo_path;
             }
-            $article = Article::create([
-                'title' => $request->title,
-                'context' => $request->context,
-                'created_by' => Auth::user()->id,
-                'photo' => $photo_path,
-                'tag_ids' => $request->tag_ids,
-            ]);
+            if(empty($article->photo)){
+                # if file object not found.
+                $article->photo =  '/assets/common/img/default/default-blog-img.png';
+            }else{
+                # if file path found not not exist.
+                if (!file_exists(public_path($article->photo))) {
+                    $article->photo =  '/assets/common/img/default/default-blog-img.png';
+                }
+            }
             $article->save();
             $newArticle = Article::leftJoin('users', 'blogs_articles.created_by', '=', 'users.id')
                 ->select('blogs_articles.*', 'users.name as author_name')

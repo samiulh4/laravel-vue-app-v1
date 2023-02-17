@@ -1,23 +1,23 @@
 <template>
-    <div id="bottomFooter">
+    <div class="vue_bottom_footer_wrapper">
+
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="footer_context">
-                        <h3>&#169;&nbsp;Copyright&nbsp;|&nbsp;</h3>
-                        <h3>Md.Samiul Haque|&nbsp;</h3>
-                        <h3>Sleepy Lab&nbsp;&#8482;</h3>
+                    <div class="vue_footer_context">
+                        <h5 class="text-center">&#169;&nbsp;Copyright&nbsp;|&nbsp;Md.Samiul Haque | Sleepy Lab</h5>
                     </div>
                 </div>
             </div>
         </div>
-    </div><!-- #/bottomFooter -->
+
+    </div><!-- ./vue_bottom_footer_wrapper -->
 </template>
 
 <script>
 export default {
     mounted() {
-        //console.log('Footer Component Mounted.')
+
     }
 }
 </script>

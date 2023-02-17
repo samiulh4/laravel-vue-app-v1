@@ -1,5 +1,5 @@
 <template>
-    <div class="top_navbar_wrapper" id="topNavbar">
+    <div class="vue_top_nav_wrapper">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" href="#">
                 <img src="../../images/vue.png" class="vue_top_nav_logo"/>
@@ -20,12 +20,12 @@
                         <router-link :to="{ name: 'BlogIndex' }" class="nav-link">Blog</router-link>
                     </li>
                 </ul>
-                <form class="form-inline navbar_search_form">
+                <!-- <form class="form-inline navbar_search_form">
                     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </form>
+                </form> -->
 
-                <ul class="navbar-nav ml-auto user_dropdown_menus">
+                <ul class="navbar-nav ml-auto vue_user_dropdown_menus">
                     <SignInMenu/>
                     <li class="nav-item dropdown" v-if="authLoggedIn">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"

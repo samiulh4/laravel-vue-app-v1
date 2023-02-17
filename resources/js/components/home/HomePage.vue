@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="vue_content_wrapper">
         <h1>Home Page</h1>
     </div>
 </template>

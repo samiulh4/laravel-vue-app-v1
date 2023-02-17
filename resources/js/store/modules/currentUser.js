@@ -35,7 +35,6 @@ const actions ={
     logoutUser({commit, dispatch}){
         axiosConfig.get('/api/sign-out')
             .then(response =>{
-                console.log('logoutUser [response] =>', response.data);
                 commit('logout');
                 alert(response.data.message);
                 dispatch('navigateTo', { path: '/sign-in' });
@@ -56,6 +55,40 @@ const actions ={
             console.log('getUser Error =>',error);
             commit('unSetToken');
         })
+    },
+    checkAuthTokenExpiration({state, commit, dispatch}) {
+        let token = state.token;
+        if (typeof token === 'undefined') {
+            console.log('Auth Token Undefined !');
+            return false;
+        }
+        if (token == '') {
+            console.log('Auth Token Empty !');
+            return false;
+        }
+        if (token == null) {
+            console.log('Auth Token Null !');
+            return false;
+        }
+        let base64Url = token.split('.')[1];
+        let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        let jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        // let expirationTime = JSON.parse(jsonPayload).exp * 1000;
+        // expirationTime = new Date(expirationTime);
+        // expirationTime = expirationTime.toLocaleString();
+        // let currentTime = Date.now();
+        // currentTime = Date(currentTime);
+        // currentTime = currentTime.toLocaleString();
+        // console.log(currentTime, expirationTime);
+        // console.log(Date.now(), JSON.parse(jsonPayload).exp * 1000);
+        //return Date.now() < JSON.parse(jsonPayload).exp * 1000;
+        if(Date.now() < JSON.parse(jsonPayload).exp * 1000){
+            console.log('It Is Ok, Auth Token Time Gather Than Current Token Time.');
+        }else{
+            console.log('It Is Not Ok, Auth Token Time Less Than Current Token Time.');
+        }
     }
 };
 const mutations = {

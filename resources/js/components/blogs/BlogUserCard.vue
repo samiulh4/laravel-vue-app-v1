@@ -1,5 +1,5 @@
 <template>
-    <div class="card my-4">
+    <div class="card my-4 vue_user_info_card">
         <div class="card-header">
             <h5 class="text-center">You</h5>
         </div>
