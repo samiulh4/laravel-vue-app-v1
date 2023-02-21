@@ -31,7 +31,7 @@
                         <div class="card-header">
                             <h5 class="text-dark">{{ article.title.slice(0, 70) }}... || {{ article.id }}</h5>
                         </div>
-                        <img :src="article.photo" class="img-fluid w-100 card-img-top" alt="COVER IMAGE NOT FOUND"
+                        <img :src="article.photo" class="card-img-top" alt="COVER IMAGE NOT FOUND"
                             @error="setAltImg" />
                         <div class="card-body">
                             <p class="card-text">{{ article.context.slice(0, 200) }}...</p>
@@ -50,7 +50,7 @@
                                 Details
                             </router-link>
 
-                            <button class="btn btn-sm btn-success float-right" v-if="authLoggedIn == true"
+                            <button class="btn btn-sm btn-success float-right mr-2" v-if="authLoggedIn == true"
                                 @click="openEditFormModal(article.id)"><i class="fa fa-circle-info"></i> Edit
                             </button>
                         </div>
@@ -217,7 +217,6 @@ export default {
         this.getTags();
     },
     methods: {
-        ...mapActions('currentUser', ['checkAuthTokenExpiration']),
         getArticleData(page) {
             if (typeof page === 'undefined') {
                 page = 0;
@@ -314,7 +313,7 @@ export default {
             }
         },
         openCreateFormModal() {
-            this.formData.id = null;
+            this.formData.id = '';
             $('#articleCreatAndEditModal').modal('show');
         },
         getEditData(id) {
@@ -349,23 +348,14 @@ export default {
         setAltImg(event) {
             event.target.src = defaultCoverImage;
         },
-        async isTokenExpiry() {
-            try {
-                await this.checkAuthTokenExpiration();
-            } catch (error) {
-                console.log('BlogIndex [Error] => '+ error);
-            }
-        },
     },
     mounted() {
-        this.isTokenExpiry();
         //The mounted lifecycle hook is called after the component has been fully rendered
         // and its computed properties have been updated.
         //window.addEventListener("scroll", this.handleScroll);
         // setTimeout(function() {
         // }, 1000);
         //$('.js-example-basic-single').select2();
-        //this.isTokenExpiry(this.authToken);
     }
 }
 </script>

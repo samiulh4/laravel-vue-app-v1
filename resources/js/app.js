@@ -11,6 +11,8 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 Vue.use(VueSweetalert2);
 
 import store from './store';
+//import authMixin from "./authMixin";
+//Vue.mixin(authMixin);
 
 Vue.component('root', require('./components/Root.vue').default);
 const app = new Vue({ router,store }).$mount('#root');

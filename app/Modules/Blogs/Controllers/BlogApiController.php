@@ -23,7 +23,8 @@ class BlogApiController extends Controller
             $offset = $page == 0 ? 0 : $page*$limit;
             $articles = Article::leftJoin('users', 'blogs_articles.created_by', '=', 'users.id')
                 ->select('blogs_articles.*', 'users.name as author_name')
-                ->orderBy('blogs_articles.id', 'desc')
+                ->orderBy('blogs_articles.updated_at', 'desc')
+                //->orderBy('blogs_articles.id', 'desc')
                 ->offset($offset)
                 ->limit($limit)
                 ->get()
@@ -46,17 +47,20 @@ class BlogApiController extends Controller
     public function store(Request $request)
     {
         try{
-            $article = Article::firstOrNew(['id' => $request->id]);
+
+
+            if(!empty($request->id)){
+                $article = Article::where('id',$request->id)->first();
+                $article->updated_by = Auth::user()->id;
+               // $article->updated_at = date('Y-m-d H:i:s');
+            }else{
+                $article = new Article();
+                $article->created_by = Auth::user()->id;
+                //$article->created_at = date('Y-m-d H:i:s');
+            }
             $article->title = $request->title;
             $article->context = $request->context;
             $article->tag_ids = $request->tag_ids;
-            if(!empty($request->id)){
-                $article->updated_by = Auth::user()->id;
-                $article->updated_at = date('Y-m-d H:i:s');
-            }else{
-                $article->created_by = Auth::user()->id;
-                $article->created_at = date('Y-m-d H:i:s');
-            }
             if(!empty($request->file('photo'))){
                 $image = $request->file('photo');
                 $image_name = 'ARTICLE_'.date('Ymd').time().'.'.$image->getClientOriginalExtension();

@@ -40,7 +40,10 @@ const actions ={
                 dispatch('navigateTo', { path: '/sign-in' });
             }).catch(error => {
                 console.log('logoutUser [error] =>', error);
-            })
+                // commit('logout');
+                // alert(error.message);
+                // dispatch('navigateTo', { path: '/sign-in' });
+            });
     },
     getUser({commit}){
         axiosConfig.get('api/about-me')
@@ -59,15 +62,13 @@ const actions ={
     checkAuthTokenExpiration({state, commit, dispatch}) {
         let token = state.token;
         if (typeof token === 'undefined') {
-            console.log('Auth Token Undefined !');
+            commit('logout');
+            console.log('Auth Token IS Undefined !');
             return false;
         }
-        if (token == '') {
-            console.log('Auth Token Empty !');
-            return false;
-        }
-        if (token == null) {
-            console.log('Auth Token Null !');
+        if (!token) {
+            commit('logout');
+            console.log('Auth Token Is Null or Empty !');
             return false;
         }
         let base64Url = token.split('.')[1];
@@ -78,17 +79,25 @@ const actions ={
         // let expirationTime = JSON.parse(jsonPayload).exp * 1000;
         // expirationTime = new Date(expirationTime);
         // expirationTime = expirationTime.toLocaleString();
-        // let currentTime = Date.now();
-        // currentTime = Date(currentTime);
-        // currentTime = currentTime.toLocaleString();
-        // console.log(currentTime, expirationTime);
-        // console.log(Date.now(), JSON.parse(jsonPayload).exp * 1000);
-        //return Date.now() < JSON.parse(jsonPayload).exp * 1000;
         if(Date.now() < JSON.parse(jsonPayload).exp * 1000){
             console.log('It Is Ok, Auth Token Time Gather Than Current Token Time.');
         }else{
+            dispatch('getAuthToken');
             console.log('It Is Not Ok, Auth Token Time Less Than Current Token Time.');
         }
+    },
+    getAuthToken({commit})
+    {
+        axiosConfig.get('/api/token-refresh')
+            .then(response =>{
+                if(response.data.success == true){
+                    commit('setToken', response.data.access_token);
+                }else {
+                    console.log(response.data.message);
+                }
+            }).catch(error => {
+            console.log('getAuthToken [error] =>', error);
+        });
     }
 };
 const mutations = {

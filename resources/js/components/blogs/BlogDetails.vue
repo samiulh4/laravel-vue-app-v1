@@ -28,7 +28,7 @@
                         </div><!-- ./article_header -->
                         <!-- Preview image figure-->
                         <figure class="mb-4">
-                            <img class="img-fluid rounded w-100 vue_article_details_img" :src="article.photo"  @error="setAltImg" />
+                            <img class="rounded w-100 vue_article_details_img" :src="article.photo"  @error="setAltImg" />
                         </figure>
                         <div class="article_context">
                             {{ article.context }}
