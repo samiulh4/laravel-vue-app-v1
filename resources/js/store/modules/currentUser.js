@@ -88,15 +88,21 @@ const actions ={
     },
     getAuthToken({commit})
     {
-        axiosConfig.get('/api/token-refresh')
+        axios.get('/api/token-refresh')
             .then(response =>{
                 if(response.data.success == true){
                     commit('setToken', response.data.access_token);
                 }else {
+                    commit('unSetToken');
+                    commit('unSetLoginStatus');
+                    commit('unSetUser');
                     console.log(response.data.message);
                 }
             }).catch(error => {
-            console.log('getAuthToken [error] =>', error);
+            commit('unSetToken');
+            commit('unSetLoginStatus');
+            commit('unSetUser');
+            console.log('getAuthToken [error] =>', error.message);
         });
     }
 };

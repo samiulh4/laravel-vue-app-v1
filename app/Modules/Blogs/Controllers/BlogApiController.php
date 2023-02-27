@@ -47,8 +47,6 @@ class BlogApiController extends Controller
     public function store(Request $request)
     {
         try{
-
-
             if(!empty($request->id)){
                 $article = Article::where('id',$request->id)->first();
                 $article->updated_by = Auth::user()->id;

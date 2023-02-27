@@ -17,7 +17,7 @@
                     <!-- Article Content -->
                     <div class="mt-4 article_content">
                         <!-- Article Header -->
-                        <div class="mb-4 article_header">
+                        <div class="p-4 mb-4 vue_article_details_header">
                             <!-- Article title-->
                             <h1>{{ article.title }}</h1>
                             <!-- Article meta content-->
@@ -30,12 +30,12 @@
                         <figure class="mb-4">
                             <img class="rounded w-100 vue_article_details_img" :src="article.photo"  @error="setAltImg" />
                         </figure>
-                        <div class="article_context">
+                        <div class="p-3 vue_article_details_context">
                             {{ article.context }}
                         </div>
                     </div><!-- ./article_content -->
                     <!-- Article Comments -->
-                    <div class="mt-5 article_comment">
+                    <div class="mt-4 article_comment">
                         <div class="card">
                             <div class="card-header">
                                 <h5>Article Comments</h5>
@@ -81,13 +81,18 @@
                     </div>
                     <!-- Article Comments -->
                 </div><!-- ./col-md-6 (Page Middle Section) -->
-                <div class="col-md-3"></div><!-- ./col-md-6 (Page Left Section) -->
+                <div class="col-md-3">
+                    <!-- Search widget-->
+                    <BlogSearchCard/>
+                    <!-- Search widget-->
+                </div><!-- ./col-md-6 (Page Left Section) -->
             </div>
         </div>
     </div>
 </template>
 <script>
     import BlogUserCard from "./BlogUserCard.vue";
+    import BlogSearchCard from "./BlogSearchCard";
     import axios from "axios";
     import axiosConfig from "../../axiosConfig";
     import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
@@ -95,7 +100,7 @@
 
     export default {
         components:{
-            BlogUserCard,
+            BlogUserCard,BlogSearchCard,
         },
         computed: {
             ...mapState('currentUser', {

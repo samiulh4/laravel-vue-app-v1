@@ -105,6 +105,12 @@ body{
     /*object-fit: contain;*/
     /*object-fit: cover;*/
 }
+.vue_article_details_header{
+    background-color: #FFFFFF;
+}
+.vue_article_details_context {
+    background-color: #FFFFFF;
+}
 .vue_bottom_footer_wrapper{
     position: fixed;
     z-index: 9999;
@@ -125,6 +131,9 @@ body{
     font-size: 15px;
     font-weight: bolder;
     font-family: 'Dancing Script Regular', cursive;
+}
+.vue_blog_search_card .card-header h6{
+    font-family: 'Alfa Slab One', cursive;
 }
 
 

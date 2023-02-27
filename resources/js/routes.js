@@ -9,6 +9,7 @@ import About from './components/about/About.vue';
 import BlogCreate from './components/blogs/BlogCreate.vue';
 import BlogIndex from './components/blogs/BlogIndex.vue';
 import BlogDetails from "./components/blogs/BlogDetails.vue";
+import BlogSearchPage from "./components/blogs/BlogSearchPage";
 
 let routes = [
     {path: '/about', component: About, name: 'About'},
@@ -21,6 +22,7 @@ let routes = [
     {path: '/blog/create', component: BlogCreate, name: 'BlogCreate'},
     {path: '/blog/index', component: BlogIndex, name: 'BlogIndex'},
     {path: '/blog/details/:id', component: BlogDetails, name: 'BlogDetails'},
+    {path: '/blog/search/:key', component: BlogSearchPage, name: 'BlogSearchPage'},
 ];
 
 export default new VueRouter({

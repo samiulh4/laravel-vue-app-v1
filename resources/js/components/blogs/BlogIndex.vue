@@ -37,22 +37,21 @@
                             <p class="card-text">{{ article.context.slice(0, 200) }}...</p>
                         </div>
                         <div class="card-footer">
-                            <div class="float-left">
-                                <small class="text-muted">
-                                    Created By&nbsp;-&nbsp;
-                                    <a href="#">{{ article.author_name }}</a>
-                                    |
-                                    <span>{{ article.created_at }}</span>
-                                </small>
-                            </div>
-                            <router-link :to="{ name: 'BlogDetails', params: { id: article.id } }"
-                                class="btn btn-sm btn-dark float-right"><i class="fa fa-circle-info"></i>
-                                Details
-                            </router-link>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h6 class="text-muted">Posted on {{ article.created_at }} by <a href="#!">{{ article.author_name }}</a></h6>
+                                </div>
+                                <div class="col-md-4">
+                                    <router-link :to="{ name: 'BlogDetails', params: { id: article.id } }"
+                                                 class="btn btn-sm btn-dark float-right"><i class="fa-solid fa-circle-info"></i>
+                                        Details
+                                    </router-link>
 
-                            <button class="btn btn-sm btn-success float-right mr-2" v-if="authLoggedIn == true"
-                                @click="openEditFormModal(article.id)"><i class="fa fa-circle-info"></i> Edit
-                            </button>
+                                    <button class="btn btn-sm btn-success float-right mr-2" v-if="authLoggedIn == true"
+                                            @click="openEditFormModal(article.id)"><i class="fa-solid fa-pen-to-square"></i> Edit
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <!-- Articles -->
@@ -63,16 +62,7 @@
                 </div><!-- ./col-md-6 (Page Middle Section) -->
                 <div class="col-md-3">
                     <!-- Search widget-->
-                    <div class="card mt-4">
-                        <div class="card-header">Search</div>
-                        <div class="card-body">
-                            <div class="input-group">
-                                <input class="form-control" type="text" placeholder="Enter search term..."
-                                    aria-label="Enter search term..." aria-describedby="button-search" />
-                                <button class="btn btn-primary" id="button-search" type="button">Go!</button>
-                            </div>
-                        </div>
-                    </div>
+                    <BlogSearchCard/>
                     <!-- Search widget-->
                     <!-- Tags widget-->
                     <div class="card mt-4">
@@ -169,6 +159,7 @@
 import axios from "axios";
 import axiosConfig from "../../axiosConfig";
 import BlogUserCard from "./BlogUserCard.vue";
+import BlogSearchCard from "./BlogSearchCard";
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
 import defaultCoverImage from "../../images/cover.png";
 
@@ -180,7 +171,7 @@ import defaultCoverImage from "../../images/cover.png";
 
 export default {
     components: {
-        BlogUserCard,
+        BlogUserCard,BlogSearchCard,
     },
     computed: {
         ...mapState('currentUser', {
