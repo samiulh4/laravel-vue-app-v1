@@ -1,0 +1,53 @@
+html,body{
+    padding: 0;
+    margin: 0;
+}
+.content_wrapper{
+    margin-bottom: 70px; /* height of the footer */
+}
+
+
+.top_navbar_wrapper nav{
+    background-color: #41B883 !important;
+    color: #283747 !important;
+}
+.top_navbar_wrapper  .btn-outline-success{
+    background-color: #318A62;
+    color: #35495E;
+}
+#topNavbar .user_dropdown_menus .dropdown-menu{
+    left : -50px;
+    margin-top: 8px;
+}
+
+#bottomFooter {
+    position: relative;
+}
+
+#bottomFooter .footer_context {
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    background-color: #41B883;
+    color: #283747;
+    padding: 15px 0 15px 0;
+}
+#bottomFooter .footer_context h3{
+    font-size: 15px;
+}
+.content_wrapper .article_card img{
+    height: 35vh;
+}
+.article_content .article_details_img{
+    height:45vh;
+}
+.vue_top_nav_logo{
+    width: 40px;
+    height: 40px;
+    background: transparent;
+}

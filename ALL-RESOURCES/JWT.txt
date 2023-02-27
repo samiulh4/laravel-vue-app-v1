@@ -1,0 +1,4 @@
+composer require tymon/jwt-auth "^1.0.2"
+php artisan migrate
+
+https://medium.com/monstar-lab-bangladesh-engineering/jwt-authentication-in-a-laravel-project-787fe9b1e179#:~:text=If%20we%20have%20a%20user,access%20token%20for%20that%20user.&text=Next%20put%20the%20following%20code%20into%20the%20controller.&text=Route%3A%3Apost('users',%2C%20'UserController%40index')%3B

@@ -5,8 +5,9 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
     protected $table= 'users';
@@ -45,5 +46,21 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\Modules\Users\Models\UserType', 'id', 'user_type_id');
     }
+     // Add this method
+     public function getJWTIdentifier()
+     {
+         return $this->getKey();
+     }
+ 
+     // Add this method
+     /**
+      * Return a key value array, containing any custom claims to be added to the JWT.
+      *
+      * @return array
+      */
+     public function getJWTCustomClaims()
+     {
+         return [];
+     }
 }// end -:- User Model
  

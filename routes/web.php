@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 Route::get('/', 'WelcomeController@index');
-Route::get('/vue', 'WelcomeController@vueTest');
+//Route::get('/vue', 'WelcomeController@vueTest');
 
 Route::get('/home', 'HomeController@index')->name('home');
 
@@ -25,3 +25,8 @@ Route::get('/login/google/callback', 'Auth\LoginController@handleGoogleCallback'
 
 // Error Handler
 Route::get('web/error/handler/{code}/{message}', 'Error\ErrorController@redirectToWebErrorHandle')->name('web.error.handler');
+
+
+
+// Vue Js Route
+Route::get('vue/{index?}', 'LaravelVueController@index')->where('index', '(.*)');
