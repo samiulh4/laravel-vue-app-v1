@@ -8200,7 +8200,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n/*.select2{*/\n/*    width: 100% !important;*/\n/*}*/", ""]);
+exports.push([module.i, "\r\n/*.select2{*/\r\n/*    width: 100% !important;*/\r\n/*}*/", ""]);
 
 // exports
 
@@ -57396,8 +57396,8 @@ var mutations = {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! E:\xampp73\htdocs\laravel\laravel-vue-app-v1\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! E:\xampp73\htdocs\laravel\laravel-vue-app-v1\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\xampp81\htdocs\laravel\laravel-vue-app-v1\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\xampp81\htdocs\laravel\laravel-vue-app-v1\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
