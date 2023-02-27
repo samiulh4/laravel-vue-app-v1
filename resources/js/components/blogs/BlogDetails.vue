@@ -1,97 +1,106 @@
 <template>
-    <div class="container-fluid content_wrapper">
-        <div class="row">
-            <div class="col-md-3">
-                <BlogUserCard v-bind:authUserProps="authUser" v-if="authLoggedIn"/>
-            </div><!-- ./col-md-6 (Page Right Section) -->
-            <div class="col-md-6">
-                <div class="mt-4" v-if="message">
-                    <div :class="`alert ${alertType} alert-dismissible fade show`" role="alert">
-                        {{ message }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                </div>
-                <!-- Article Content -->
-                <div class="mt-4 article_content">
-                    <!-- Article Header -->
-                    <div class="mb-4 article_header">
-                        <!-- Article title-->
-                        <h1>{{ article.title }}</h1>
-                        <!-- Article meta content-->
-                        <h6 class="text-muted mb-2">Posted on {{ article.created_at }} by <a href="#!">{{ article.author_name }}</a></h6>
-                        <!-- Post categories-->
-                        <a class="badge badge-dark text-decoration-none link-dark" href="#!">Web Design</a>
-                        <a class="badge badge-dark text-decoration-none link-dark" href="#!">Freebies</a>
-                    </div><!-- ./article_header -->
-                    <!-- Preview image figure-->
-                    <figure class="mb-4">
-                        <img class="img-fluid rounded w-100 article_details_img" :src="article.photo" alt="..." />
-                    </figure>
-                    <div class="article_context">
-                        {{ article.context }}
-                    </div>
-                </div><!-- ./article_content -->
-                <!-- Article Comments -->
-                <div class="mt-5 article_comment">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5>Article Comments</h5>
+    <div class="vue_content_wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3">
+                    <BlogUserCard v-bind:authUserProps="authUser" v-if="authLoggedIn"/>
+                </div><!-- ./col-md-6 (Page Right Section) -->
+                <div class="col-md-6">
+                    <div class="mt-4" v-if="message">
+                        <div :class="`alert ${alertType} alert-dismissible fade show`" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-                        <div class="card-body">
-                            <!-- Comment form-->
-                            <form class="mb-4"><textarea class="form-control" rows="3" placeholder="Join the discussion and leave a comment!"></textarea></form>
-                            <!-- Comment with nested comments-->
-                            <div class="d-flex mb-4">
-                                <!-- Parent comment-->
-                                <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                                <div class="ms-3">
-                                    <div class="fw-bold">Commenter Name</div>
-                                    If you're going to lead a space frontier, it has to be government; it'll never be private enterprise. Because the space frontier is dangerous, and it's expensive, and it has unquantified risks.
-                                    <!-- Child comment 1-->
-                                    <div class="d-flex mt-4">
-                                        <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                                        <div class="ms-3">
-                                            <div class="fw-bold">Commenter Name</div>
-                                            And under those conditions, you cannot establish a capital-market evaluation of that enterprise. You can't get investors.
+                    </div>
+                    <!-- Article Content -->
+                    <div class="mt-4 article_content">
+                        <!-- Article Header -->
+                        <div class="p-4 mb-4 vue_article_details_header">
+                            <!-- Article title-->
+                            <h1>{{ article.title }}</h1>
+                            <!-- Article meta content-->
+                            <h6 class="text-muted mb-2">Posted on {{ article.created_at }} by <a href="#!">{{ article.author_name }}</a></h6>
+                            <!-- Post categories-->
+                            <a class="badge badge-dark text-decoration-none link-dark" href="#!">Web Design</a>
+                            <a class="badge badge-dark text-decoration-none link-dark" href="#!">Freebies</a>
+                        </div><!-- ./article_header -->
+                        <!-- Preview image figure-->
+                        <figure class="mb-4">
+                            <img class="rounded w-100 vue_article_details_img" :src="article.photo"  @error="setAltImg" />
+                        </figure>
+                        <div class="p-3 vue_article_details_context">
+                            {{ article.context }}
+                        </div>
+                    </div><!-- ./article_content -->
+                    <!-- Article Comments -->
+                    <div class="mt-4 article_comment">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Article Comments</h5>
+                            </div>
+                            <div class="card-body">
+                                <!-- Comment form-->
+                                <form class="mb-4"><textarea class="form-control" rows="3" placeholder="Join the discussion and leave a comment!"></textarea></form>
+                                <!-- Comment with nested comments-->
+                                <div class="d-flex mb-4">
+                                    <!-- Parent comment-->
+                                    <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                                    <div class="ms-3">
+                                        <div class="fw-bold">Commenter Name</div>
+                                        If you're going to lead a space frontier, it has to be government; it'll never be private enterprise. Because the space frontier is dangerous, and it's expensive, and it has unquantified risks.
+                                        <!-- Child comment 1-->
+                                        <div class="d-flex mt-4">
+                                            <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                                            <div class="ms-3">
+                                                <div class="fw-bold">Commenter Name</div>
+                                                And under those conditions, you cannot establish a capital-market evaluation of that enterprise. You can't get investors.
+                                            </div>
                                         </div>
-                                    </div>
-                                    <!-- Child comment 2-->
-                                    <div class="d-flex mt-4">
-                                        <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                                        <div class="ms-3">
-                                            <div class="fw-bold">Commenter Name</div>
-                                            When you put money directly to a problem, it makes a good headline.
+                                        <!-- Child comment 2-->
+                                        <div class="d-flex mt-4">
+                                            <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                                            <div class="ms-3">
+                                                <div class="fw-bold">Commenter Name</div>
+                                                When you put money directly to a problem, it makes a good headline.
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- Single comment-->
-                            <div class="d-flex">
-                                <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                                <div class="ms-3">
-                                    <div class="fw-bold">Commenter Name</div>
-                                    When I look at the universe and all the ways the universe wants to kill us, I find it hard to reconcile that with statements of beneficence.
+                                <!-- Single comment-->
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                                    <div class="ms-3">
+                                        <div class="fw-bold">Commenter Name</div>
+                                        When I look at the universe and all the ways the universe wants to kill us, I find it hard to reconcile that with statements of beneficence.
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- Article Comments -->
-            </div><!-- ./col-md-6 (Page Middle Section) -->
-            <div class="col-md-3"></div><!-- ./col-md-6 (Page Left Section) -->
+                    <!-- Article Comments -->
+                </div><!-- ./col-md-6 (Page Middle Section) -->
+                <div class="col-md-3">
+                    <!-- Search widget-->
+                    <BlogSearchCard/>
+                    <!-- Search widget-->
+                </div><!-- ./col-md-6 (Page Left Section) -->
+            </div>
         </div>
     </div>
 </template>
 <script>
     import BlogUserCard from "./BlogUserCard.vue";
+    import BlogSearchCard from "./BlogSearchCard";
     import axios from "axios";
     import axiosConfig from "../../axiosConfig";
     import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
+    import defaultCoverImage from "../../images/cover.png";
+
     export default {
         components:{
-            BlogUserCard,
+            BlogUserCard,BlogSearchCard,
         },
         computed: {
             ...mapState('currentUser', {
@@ -150,6 +159,9 @@
                     this.alertType = 'alert-danger';
                 });
             },
+            setAltImg(event) {
+                event.target.src = defaultCoverImage;
+            }
         },
         mounted() {
             //The mounted lifecycle hook is called after the component has been fully rendered

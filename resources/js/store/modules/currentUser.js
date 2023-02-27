@@ -35,13 +35,15 @@ const actions ={
     logoutUser({commit, dispatch}){
         axiosConfig.get('/api/sign-out')
             .then(response =>{
-                console.log('logoutUser [response] =>', response.data);
                 commit('logout');
                 alert(response.data.message);
                 dispatch('navigateTo', { path: '/sign-in' });
             }).catch(error => {
                 console.log('logoutUser [error] =>', error);
-            })
+                // commit('logout');
+                // alert(error.message);
+                // dispatch('navigateTo', { path: '/sign-in' });
+            });
     },
     getUser({commit}){
         axiosConfig.get('api/about-me')
@@ -56,6 +58,52 @@ const actions ={
             console.log('getUser Error =>',error);
             commit('unSetToken');
         })
+    },
+    checkAuthTokenExpiration({state, commit, dispatch}) {
+        let token = state.token;
+        if (typeof token === 'undefined') {
+            commit('logout');
+            console.log('Auth Token IS Undefined !');
+            return false;
+        }
+        if (!token) {
+            commit('logout');
+            console.log('Auth Token Is Null or Empty !');
+            return false;
+        }
+        let base64Url = token.split('.')[1];
+        let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        let jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        // let expirationTime = JSON.parse(jsonPayload).exp * 1000;
+        // expirationTime = new Date(expirationTime);
+        // expirationTime = expirationTime.toLocaleString();
+        if(Date.now() < JSON.parse(jsonPayload).exp * 1000){
+            console.log('It Is Ok, Auth Token Time Gather Than Current Token Time.');
+        }else{
+            dispatch('getAuthToken');
+            console.log('It Is Not Ok, Auth Token Time Less Than Current Token Time.');
+        }
+    },
+    getAuthToken({commit})
+    {
+        axios.get('/api/token-refresh')
+            .then(response =>{
+                if(response.data.success == true){
+                    commit('setToken', response.data.access_token);
+                }else {
+                    commit('unSetToken');
+                    commit('unSetLoginStatus');
+                    commit('unSetUser');
+                    console.log(response.data.message);
+                }
+            }).catch(error => {
+            commit('unSetToken');
+            commit('unSetLoginStatus');
+            commit('unSetUser');
+            console.log('getAuthToken [error] =>', error.message);
+        });
     }
 };
 const mutations = {

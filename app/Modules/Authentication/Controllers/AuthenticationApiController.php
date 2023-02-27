@@ -56,7 +56,28 @@ class AuthenticationApiController extends Controller
     }// end -:- apiSignOut()
     public function apiTokenRefresh()
     {
-        return $this->respondWithToken(auth()->refresh());
+        try{
+            if (auth()->check()) {
+                return response()->json([
+                    "success" => true,
+                    "status" => 200,
+                    'access_token' => auth()->refresh(),
+                    "message" => "Auth Token Generate Successfully."
+                ]);
+            }else{
+                return response()->json([
+                    "success" => false,
+                    "status" => 401,
+                    "message" => "Unauthenticated, Please Sign In !"
+                ]);
+            }
+        }catch (\Exception $e){
+            return response()->json([
+                "success" => false,
+                "status" => 401,
+                "message" => $e->getMessage()
+            ]);
+        }
     }// end -:- apiTokenRefresh()
     public function apiMe()
     {

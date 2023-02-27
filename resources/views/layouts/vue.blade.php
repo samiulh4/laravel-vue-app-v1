@@ -13,6 +13,24 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <!-- Fontawesome CSS -->
     <link href="{{ asset('assets/common/plugins/fontawesome/css/all.min.css') }}" rel="stylesheet">
+
+
+    <style>
+        @font-face {
+            font-family: 'Alfa Slab One';
+            src: url({{ asset('assets/common/fonts/Alfa_Slab_One/AlfaSlabOne-Regular.ttf') }}) format('truetype');
+
+        }
+        @font-face {
+            font-family: 'Dancing Script Regular';
+            src: url({{ asset('assets/common/fonts/Dancing_Script/DancingScript-Regular.ttf') }}) format('truetype');
+
+        }
+        @font-face {
+            font-family: 'Roboto Regular';
+            src: url({{ asset('assets/common/fonts/Roboto/Roboto-Regular.ttf') }}) format('truetype');
+        }
+    </style>
     <!-- Custom CSS -->
     <link href="{{ asset('assets/common/styles/vue/style.css') }}" rel="stylesheet">
 </head>
@@ -20,7 +38,7 @@
 <body>
     <div id="root">
         <root></root>
-        <router-view></router-view><!-- where to place route component-->
+{{--        <router-view></router-view><!-- where to place route component-->--}}
     </div>
     <!-- Scripts -->
     <script src="{{ mix('js/app.js') }}"></script>
