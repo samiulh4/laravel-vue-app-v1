@@ -33,6 +33,7 @@ class HomeController extends Controller
         }else{
             return view('home');
         }*/
-        return redirect('/admin/v2/dashboard');
+        //return redirect('/admin/v2/dashboard');
+        return redirect('/');
     }
 }

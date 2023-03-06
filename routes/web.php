@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 Route::get('/', 'WelcomeController@index');
-//Route::get('/vue', 'WelcomeController@vueTest');
+
 
 Route::get('/home', 'HomeController@index')->name('home');
 
