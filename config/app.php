@@ -171,6 +171,7 @@ return [
         Laravel\Socialite\SocialiteServiceProvider::class,
         'Intervention\Image\ImageServiceProvider',
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+        Weidner\Goutte\GoutteServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -239,6 +240,7 @@ return [
         'Image' => 'Intervention\Image\Facades\Image',
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
+        'Goutte' => Weidner\Goutte\GoutteFacade::class,
     ],
 
 ];
