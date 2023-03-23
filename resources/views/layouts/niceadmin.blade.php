@@ -10,7 +10,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Title -->
-    <title>@yield('title', 'Laravel Vue App V1 | NiceAdmin')</title>
+    <title>@yield('title', 'Laravel App | Admin | V2')</title>
     <!-- Favicons -->
     <link rel="icon" type="image/png" href="{{ asset('assets/common/img/favicon.png') }}" />
     <link href="{{ asset('assets/niceadmin/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
@@ -27,16 +27,7 @@
     @include('partials.niceadmin.nav')
     @include('partials.niceadmin.sidebar')
     <main id="main" class="main">
-        <div class="pagetitle">
-            <h1>Blank Page</h1>
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item">Pages</li>
-                    <li class="breadcrumb-item active">Blank</li>
-                </ol>
-            </nav>
-        </div><!-- End Page Title -->
+        @yield('breadcrumb')
         <section class="section">
             <div class="row">
                 @yield('content')
@@ -46,7 +37,6 @@
     @include('partials.niceadmin.footer')
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
     @include('partials.niceadmin.scripts')
-    @yield('styles')
     @yield('scripts')
 </body>
 
