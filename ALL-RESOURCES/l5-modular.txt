@@ -8,7 +8,7 @@ composer require artem-schander/l5-modular "^1.4.3"
 ]
 
 
-php artisan make:module module_name [--no-migration] [--no-translation]
+php artisan make:module module_name --no-migration --no-translation
 php artisan make:module Users --no-migration
 php artisan make:module Dashboards --no-migration
 
@@ -18,6 +18,6 @@ php artisan make:module:controller MemberController --module=HelloWorld --model=
 php artisan make:module:controller AdminUserController --module=HelloWorld
 
 
-# Make Model 
+# Make Model
 php artisan make:module:model UserType --module=Users
 php artisan make:Users:model UserType

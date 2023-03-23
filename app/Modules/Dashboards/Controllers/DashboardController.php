@@ -25,7 +25,7 @@ class DashboardController extends Controller
     {
         return view("Dashboards::niceadmin-dashboard");
     }
-    
+
 
     public function index()
     {

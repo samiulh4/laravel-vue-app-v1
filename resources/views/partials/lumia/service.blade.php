@@ -10,7 +10,7 @@
             <div class="col-md-6">
                 <div class="icon-box">
                     <i class="bi bi-briefcase"></i>
-                    <h4><a href="#">Lorem Ipsum</a></h4>
+                    <h4><a href="{{ url('/job') }}">Job Search</a></h4>
                     <p>Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident</p>
                 </div>
             </div>
