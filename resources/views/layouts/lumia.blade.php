@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Laravel & Vue App | Lumia</title>
+    <title>@yield('title', 'Laravel & Vue App | Web')</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
     <!-- CSRF Token -->
@@ -30,13 +30,35 @@
 <body>
 
 <!-- ======= Header ======= -->
-@include('partials.lumia.header')
+@include('partials.lumia.nav')
 
 <!-- ======= Hero Section ======= -->
-@yield('cover')
+@yield('banner')
 
 <main id="main">
-    @yield('content')
+    @yield('breadcrumb')
+    <!-- ======= Breadcrumbs ======= -->
+{{--    <section class="breadcrumbs">--}}
+{{--        <div class="container">--}}
+{{--            <div class="d-flex justify-content-between align-items-center">--}}
+{{--                <h2>Inner Page</h2>--}}
+{{--                <ol>--}}
+{{--                    <li><a href="index.html">Home</a></li>--}}
+{{--                    <li>Inner Page</li>--}}
+{{--                </ol>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </section>--}}
+    <!-- End Breadcrumbs -->
+
+    <!-- ======= Page Content ======= -->
+    <section class="inner-page">
+        <div class="container">
+            @yield('content')
+        </div>
+    </section>
+    <!-- End Page Content -->
+
 </main><!-- End #main -->
 
 <!-- ======= Footer ======= -->

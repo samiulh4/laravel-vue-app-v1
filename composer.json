@@ -19,6 +19,7 @@
         "laravel/socialite": "^4.4.1",
         "laravel/tinker": "^1.0",
         "tymon/jwt-auth": "1.0.2",
+        "weidner/goutte": "^1.6.1",
         "yajra/laravel-datatables-oracle": "^9.21"
     },
     "require-dev": {
