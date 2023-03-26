@@ -1,5 +1,6 @@
   <!-- Template Core CSS Files -->
-  <link href="{{ asset('assets/niceadmin/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+{{--  <link href="{{ asset('assets/niceadmin/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">--}}
+  <link href="{{ asset('assets/common/plugins/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
   <link href="{{ asset('assets/niceadmin/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
   <link href="{{ asset('assets/niceadmin/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
   <link href="{{ asset('assets/niceadmin/vendor/quill/quill.snow.css') }}" rel="stylesheet">
