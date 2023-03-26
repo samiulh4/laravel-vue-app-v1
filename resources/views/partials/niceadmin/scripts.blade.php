@@ -1,5 +1,6 @@
   <!-- Template Core JS Files -->
-  <script src="{{ asset('assets/niceadmin/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+{{--  <script src="{{ asset('assets/niceadmin/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>--}}
+  <script src="{{ asset('assets/common/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
   <script src="{{ asset('assets/niceadmin/vendor/apexcharts/apexcharts.min.js') }}"></script>
   <script src="{{ asset('assets/niceadmin/vendor/chart.js/chart.umd.js') }}"></script>
   <script src="{{ asset('assets/niceadmin/vendor/echarts/echarts.min.js') }}"></script>

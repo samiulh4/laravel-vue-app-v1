@@ -2,12 +2,14 @@
   <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
 
+        <!-- Start -:- Dashboard & Home -->
       <li class="nav-item">
         <a class="nav-link collapsed" href="{{ url('/admin/v2/dashboard') }}">
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
         </a>
-      </li><!-- End Dashboard Nav -->
+      </li>
+        <!-- End -:- Dashboard & Home -->
 
       <!-- Start -:- User Management -->
       <li class="nav-item">
@@ -31,7 +33,7 @@
         </a>
         <ul id="niceAdminJobModule" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
-            <a href="forms-elements.html">
+            <a href="{{ url('/admin/v2/job/index') }}">
               <i class="bi bi-circle"></i><span>Job List</span>
             </a>
           </li>
