@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSettingsCompaniesTable extends Migration
+class CreateJobsUrlToFetchTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,9 @@ class CreateSettingsCompaniesTable extends Migration
      */
     public function up()
     {
-        Schema::create('settings_companies', function (Blueprint $table) {
+        Schema::create('jobs_url_to_fetch', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name', 255);
-            $table->text('description')->nullable();
-            $table->string('mobile', 20)->nullable();
-            $table->string('phone', 20)->nullable();
-            $table->text('location')->nullable();
-            $table->string('web_address', 255)->nullable();
-            $table->bigInteger('country_id')->unsigned()->nullable();
+            $table->text('web_url');
             $table->bigInteger('job_web_id')->unsigned()->nullable();
             $table->tinyInteger('is_active')->nullable()->default(1);
             $table->bigInteger('created_by')->unsigned()->nullable();
@@ -37,6 +31,6 @@ class CreateSettingsCompaniesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('settings_companies');
+        Schema::dropIfExists('jobs_url_to_fetch');
     }
 }

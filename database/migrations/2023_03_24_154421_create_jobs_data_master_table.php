@@ -27,6 +27,8 @@ class CreateJobsDataMasterTable extends Migration
             $table->bigInteger('job_nature_id')->unsigned()->nullable();
             $table->string('location', 255)->nullable();
             $table->bigInteger('job_country_id')->unsigned()->nullable();
+            $table->bigInteger('job_web_id')->unsigned()->nullable();
+            $table->text('url_from_fetch')->nullable();
             $table->tinyInteger('is_active')->nullable()->default(1);
             $table->bigInteger('created_by')->unsigned()->nullable();
             $table->bigInteger('updated_by')->unsigned()->nullable();

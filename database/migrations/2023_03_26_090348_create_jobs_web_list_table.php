@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSettingsCompaniesTable extends Migration
+class CreateJobsWebListTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,12 @@ class CreateSettingsCompaniesTable extends Migration
      */
     public function up()
     {
-        Schema::create('settings_companies', function (Blueprint $table) {
+        Schema::create('jobs_web_list', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name', 255);
-            $table->text('description')->nullable();
-            $table->string('mobile', 20)->nullable();
-            $table->string('phone', 20)->nullable();
-            $table->text('location')->nullable();
-            $table->string('web_address', 255)->nullable();
-            $table->bigInteger('country_id')->unsigned()->nullable();
-            $table->bigInteger('job_web_id')->unsigned()->nullable();
+            $table->string('web_name', 100);
+            $table->text('web_host');
+            $table->string('web_port', 4)->nullable();
+            $table->string('web_prefix', 10)->nullable();
             $table->tinyInteger('is_active')->nullable()->default(1);
             $table->bigInteger('created_by')->unsigned()->nullable();
             $table->bigInteger('updated_by')->unsigned()->nullable();
@@ -37,6 +33,6 @@ class CreateSettingsCompaniesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('settings_companies');
+        Schema::dropIfExists('jobs_web_list');
     }
 }
